@@ -45,7 +45,6 @@ void CowBase::AutonomousInit()
 void CowBase::TeleopInit()
 {
 	m_Bot->SetController(m_OpController);
-	m_Bot->SetCanBurglar(false);
 }
 
 void CowBase::DisabledContinuous()
@@ -85,21 +84,11 @@ void CowBase::DisabledPeriodic()
 }
 void CowBase::AutonomousPeriodic()
 {
-//	m_Bot->DriveLeftRight(1, 1);
-//	m_Bot->PrintToDS();
 	m_Bot->handle();
 }
 void CowBase::TeleopPeriodic()
 {
-//	if(m_ControlBoard->GetAutoSelectButton())
-//	{
-//		m_Bot->Reset();
-//		m_Constants->RestoreData();
-//	}
-//
-//	m_Bot->PrintToDS();
 	m_Bot->handle();
-	//exit(1);
 }
 
 START_ROBOT_CLASS(CowBase);

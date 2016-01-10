@@ -7,8 +7,6 @@
 
 #include <WPILib.h>
 #include "Controllers/GenericController.h"
-#include "Subsystems/Pincher.h"
-#include "Subsystems/Spool.h"
 #include "CowLib/CowLib.h"
 #include "CowControlBoard.h"
 #include "CounterBase.h"
@@ -35,24 +33,10 @@ private:
 	
 	AnalogGyro *m_Gyro;
 	Encoder *m_DriveEncoder;
-	
-	Pincher *m_Pincher;
-	Spool *m_VerticalLift;
-
-	//Spool *m_HorizontalLift;
-
-	Solenoid *m_CanBurglarA;
-	Solenoid *m_CanBurglarB;
-
 
 	PowerDistributionPanel *m_PowerDistributionPanel;
 
 	CowLib::CowAlphaNum *m_LEDDisplay;
-
-	DigitalInput* m_GrabSwitch;
-	bool m_AutoGrabOnce;
-	float m_AutoGrabReleaseTime;
-	float m_PreviousPincherSP;
 
 	float m_LeftDriveValue;
 	float m_RightDriveValue;
@@ -60,8 +44,6 @@ private:
 	double m_PreviousGyroError;
 	double m_PreviousDriveError;
 
-	bool m_CanBurglarValue;
-		
 	void SetLeftMotors(float val);
 	void SetRightMotors(float val);
 
@@ -80,8 +62,6 @@ public:
 	void DriveLeftRight(float leftDriveValue, float rightDriveValue);
 	void QuickTurn(float turn);
 	
-	void SetCanBurglar(bool val);
-
 	CowLib::CowAlphaNum *GetDisplay()
 	{
 		return m_LEDDisplay;
@@ -100,21 +80,6 @@ public:
 	Encoder *GetEncoder()
 	{
 		return m_DriveEncoder;
-	}
-
-	Spool *GetVerticalLift()
-	{
-		return m_VerticalLift;
-	}
-
-//	Spool *GetHorizontalLift()
-//	{
-//		return m_HorizontalLift;
-//	}
-
-	Pincher *GetPincher()
-	{
-		return m_Pincher;
 	}
 
 	void handle();

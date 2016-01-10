@@ -39,98 +39,23 @@ void AutoModeController::handle(CowRobot *bot)
 		}
 		case CMD_WAIT:
 		{
-			if(m_CurrentCommand.m_PincherMode == PINCH)
-			{
-				bot->GetPincher()->PositionMode();
-				bot->GetPincher()->EnablePositionPID();
-			}
-			else if(m_CurrentCommand.m_PincherMode == GRAB)
-			{
-				bot->GetPincher()->GrabMode();
-			}
-
-			bot->GetVerticalLift()->UpdateSetPoint(m_CurrentCommand.m_VerticalPosition);
-			bot->GetPincher()->UpdateSetPoint(m_CurrentCommand.m_PincherPosition);
-			bot->GetPincher()->ManualControl(m_CurrentCommand.m_IntakeSpeed, 0);
 			bot->DriveWithHeading(m_CurrentCommand.m_Heading, 0);
-			bot->SetCanBurglar(m_CurrentCommand.m_CanBurglar);
 			doNothing(bot);
 			break;
 		}
 		case CMD_TURN:
 		{
-			if(m_CurrentCommand.m_PincherMode == PINCH)
-			{
-				bot->GetPincher()->PositionMode();
-				bot->GetPincher()->EnablePositionPID();
-			}
-			else if(m_CurrentCommand.m_PincherMode == GRAB)
-			{
-				bot->GetPincher()->GrabMode();
-			}
-
-			bot->GetVerticalLift()->UpdateSetPoint(m_CurrentCommand.m_VerticalPosition);
-			bot->GetPincher()->UpdateSetPoint(m_CurrentCommand.m_PincherPosition);
-			bot->GetPincher()->ManualControl(m_CurrentCommand.m_IntakeSpeed, 0);
-			bot->SetCanBurglar(m_CurrentCommand.m_CanBurglar);
 			result = bot->DriveWithHeading(m_CurrentCommand.m_Heading, 0);
-			break;
-		}
-		case CMD_TURN_WITH_TOTE:
-		{
-			if(m_CurrentCommand.m_PincherMode == PINCH)
-			{
-				bot->GetPincher()->PositionMode();
-				bot->GetPincher()->EnablePositionPID();
-			}
-			else if(m_CurrentCommand.m_PincherMode == GRAB)
-			{
-				bot->GetPincher()->GrabMode();
-			}
-
-			bot->GetVerticalLift()->UpdateSetPoint(m_CurrentCommand.m_VerticalPosition);
-			bot->GetPincher()->UpdateSetPoint(m_CurrentCommand.m_PincherPosition);
-			bot->GetPincher()->ManualControl(m_CurrentCommand.m_IntakeSpeed, 0);
-			bot->SetCanBurglar(m_CurrentCommand.m_CanBurglar);
-			result = bot->DriveWithHeading(m_CurrentCommand.m_Heading, 0, 0.35);
 			break;
 		}
 		case CMD_HOLD_DISTANCE:
 		{
-			if(m_CurrentCommand.m_PincherMode == PINCH)
-			{
-				bot->GetPincher()->PositionMode();
-				bot->GetPincher()->EnablePositionPID();
-			}
-			else if(m_CurrentCommand.m_PincherMode == GRAB)
-			{
-				bot->GetPincher()->GrabMode();
-			}
-
-			bot->GetVerticalLift()->UpdateSetPoint(m_CurrentCommand.m_VerticalPosition);
-			bot->GetPincher()->UpdateSetPoint(m_CurrentCommand.m_PincherPosition);
-			bot->GetPincher()->ManualControl(m_CurrentCommand.m_IntakeSpeed, 0);
 			bot->DriveDistanceWithHeading(m_CurrentCommand.m_Heading, m_CurrentCommand.m_EncoderCount);
-			bot->SetCanBurglar(m_CurrentCommand.m_CanBurglar);
 			result = false;
 			break;
 		}
 		case CMD_DRIVE_DISTANCE:
 		{
-			if(m_CurrentCommand.m_PincherMode == PINCH)
-			{
-				bot->GetPincher()->PositionMode();
-				bot->GetPincher()->EnablePositionPID();
-			}
-			else if(m_CurrentCommand.m_PincherMode == GRAB)
-			{
-				bot->GetPincher()->GrabMode();
-			}
-
-			bot->GetVerticalLift()->UpdateSetPoint(m_CurrentCommand.m_VerticalPosition);
-			bot->GetPincher()->UpdateSetPoint(m_CurrentCommand.m_PincherPosition);
-			bot->GetPincher()->ManualControl(m_CurrentCommand.m_IntakeSpeed, 0);
-			bot->SetCanBurglar(m_CurrentCommand.m_CanBurglar);
 			result = bot->DriveDistanceWithHeading(m_CurrentCommand.m_Heading, m_CurrentCommand.m_EncoderCount);
 			break;
 		}

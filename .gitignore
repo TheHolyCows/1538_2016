@@ -26,3 +26,9 @@
 *.exe
 *.out
 *.app
+
+# Eclipse
+/Debug/
+
+# OS X
+.DS_Store

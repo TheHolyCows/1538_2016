@@ -21,10 +21,6 @@ CowRobot::CowRobot()
 
 	m_LEDDisplay = new CowLib::CowAlphaNum(0x70);
 
-	m_GrabSwitch = new DigitalInput(MXP_GRAB_SWITCH);
-	m_AutoGrabReleaseTime = Timer::GetFPGATimestamp();
-	m_AutoGrabOnce = false;
-
 	m_Gyro = new AnalogGyro(0);
 	m_Gyro->SetSensitivity(0.0068);
 	m_Gyro->Reset();
@@ -34,33 +30,17 @@ CowRobot::CowRobot()
 
 	m_PowerDistributionPanel = new PowerDistributionPanel();
 
-	m_VerticalLift = new Spool("VSPOOL", VSPOOL_A, VSPOOL_B, MXP_VSPOOL_A, MXP_VSPOOL_B, true);
-	//m_HorizontalLift = new Spool("HSPOOL", HSPOOL_A, MXP_HSPOOL_A, MXP_HSPOOL_B, true);
-
-	m_CanBurglarA = new Solenoid(CANBURGLAR_A);
-	m_CanBurglarB = new Solenoid(CANBURGLAR_B);
-
-	//Todo: Get PID auto enabling to work
-	//m_VerticalLift->DisablePID();
-	//m_HorizontalLift->DisablePID();
-
-	m_Pincher = new Pincher(LEFT_INTAKE, RIGHT_INTAKE, PINCHER_A, PINCHER_B, MXP_GRABBER_A, MXP_GRABBER_B);
-
 	m_LeftDriveValue = 0;
 	m_RightDriveValue = 0;
 	
 	m_PreviousGyroError = 0;
 	m_PreviousDriveError = 0;
-
-	m_CanBurglarValue = false;
 }
 
 void CowRobot::Reset()
 {
 	m_DriveEncoder->Reset();
 	m_Gyro->Reset();
-	m_Pincher->Reset();
-	m_VerticalLift->Reset();
 
 	m_PreviousGyroError = 0;
 	m_PreviousDriveError = 0;
@@ -99,39 +79,7 @@ void CowRobot::handle()
 
 	//printf("Handling...\n");
 	m_Controller->handle(this);
-	m_VerticalLift->handle();
-	//m_HorizontalLift->handle();
-	m_Pincher->handle();
-	m_CanBurglarA->Set(m_CanBurglarValue);
-	m_CanBurglarB->Set(m_CanBurglarValue);
 	
-	float currentPincherSP = m_Pincher->GetSetPoint();
-	if(currentPincherSP == 0 && currentPincherSP != m_PreviousPincherSP)
-	{
-		m_AutoGrabReleaseTime = Timer::GetFPGATimestamp() + 2;
-	}
-	m_PreviousPincherSP = currentPincherSP;
-
-	if(m_GrabSwitch->Get() == false && (m_AutoGrabReleaseTime < Timer::GetFPGATimestamp()))
-	{
-		if(!m_AutoGrabOnce)
-		{
-			if(m_VerticalLift->GetPosition() >= CONSTANT("VERTICAL_BASE_TOTE"))
-			{
-				m_VerticalLift->UpdateSetPoint(0);
-			}
-
-			m_Pincher->UpdateSetPoint(CONSTANT("PINCHER_CAN"));
-			m_Pincher->EnablePositionPID();
-
-			m_AutoGrabOnce = true;
-		}
-	}
-	else
-	{
-			m_AutoGrabOnce = false;
-	}
-
 	// Default drive
 	float tmpLeftMotor = m_LeftDriveValue;
 	float tmpRightMotor = m_RightDriveValue;
@@ -140,8 +88,7 @@ void CowRobot::handle()
 	SetRightMotors(tmpRightMotor);
 	if(m_DSUpdateCount % 10 == 0)
 	{
-		printf("Gyro: %f, VSP: %f, Pincher Watts: %f\r\n",  m_Gyro->GetAngle(),
-				m_VerticalLift->GetPosition(), m_Pincher->GetWattage());
+		printf("Gyro: %f\r\n", m_Gyro->GetAngle());
 	}
 
 	m_DSUpdateCount++;
@@ -254,11 +201,6 @@ void CowRobot::DriveSpeedTurn(float speed, float turn, bool quickTurn)
 	float right_power = CowLib::LimitMix(speed - turn);
 
 	DriveLeftRight(left_power, right_power);
-}
-
-void CowRobot::SetCanBurglar(bool val)
-{
-	m_CanBurglarValue = val;
 }
 
 // Allows robot to spin in place
