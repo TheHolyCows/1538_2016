@@ -12,7 +12,8 @@
 #include "CounterBase.h"
 #include "CowConstants.h"
 #include "CowLib/CowAlphaNum.h"
-
+#include "CowLib/CowWebDebugger.h"
+#include "CowGyro.h"
 
 class CowRobot
 {
@@ -31,12 +32,13 @@ private:
 	CANTalon *m_RightDriveB;
 	CANTalon *m_RightDriveC;
 	
-	AnalogGyro *m_Gyro;
+	CowLib::CowGyro *m_Gyro;
 	Encoder *m_DriveEncoder;
 
 	PowerDistributionPanel *m_PowerDistributionPanel;
 
 	CowLib::CowAlphaNum *m_LEDDisplay;
+	CowLib::CowWebDebugger *m_WebServer;
 
 	float m_LeftDriveValue;
 	float m_RightDriveValue;
@@ -72,7 +74,7 @@ public:
 		return m_PowerDistributionPanel;
 	}
 
-	Gyro *GetGyro()
+	CowLib::CowGyro *GetGyro()
 	{
 		return m_Gyro;
 	}

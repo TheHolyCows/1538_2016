@@ -21,14 +21,14 @@ CowRobot::CowRobot()
 
 	m_LEDDisplay = new CowLib::CowAlphaNum(0x70);
 
-	m_Gyro = new AnalogGyro(0);
-	m_Gyro->SetSensitivity(0.0068);
-	m_Gyro->Reset();
+	m_Gyro = new CowLib::CowGyro();
+	//m_Gyro->Reset();
 
 	m_DriveEncoder = new Encoder(MXP_DRIVE_A, MXP_DRIVE_B, true, Encoder::k1X);
 	m_DriveEncoder->SetDistancePerPulse(0.03490658503); // 4*pi/360
 
 	m_PowerDistributionPanel = new PowerDistributionPanel();
+	m_WebServer = new CowLib::CowWebDebugger();
 
 	m_LeftDriveValue = 0;
 	m_RightDriveValue = 0;
@@ -40,7 +40,7 @@ CowRobot::CowRobot()
 void CowRobot::Reset()
 {
 	m_DriveEncoder->Reset();
-	m_Gyro->Reset();
+	//m_Gyro->Reset();
 
 	m_PreviousGyroError = 0;
 	m_PreviousDriveError = 0;
