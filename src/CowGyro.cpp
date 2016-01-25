@@ -30,13 +30,18 @@ std::atomic<bool> CowGyro::m_VolatileShouldReZero(false);
 double CowGyro::m_ZeroHeading = 0;
 bool CowGyro::m_IsZeroed = false;
 double CowGyro::m_ZeroRatesSamples[K_ZEROING_SAMPLES];
-int32_t CowGyro::m_ZeroRateSampleIndex = 0;
-bool CowGyro::m_HasEnoughZeroingSamples = false;
+//int32_t CowGyro::m_ZeroRateSampleIndex = 0;
+//bool CowGyro::m_HasEnoughZeroingSamples = false;
 double CowGyro::m_ZeroBias = 0;
 double CowGyro::m_Angle = 0;
 double CowGyro::m_LastTime = 0;
+bool CowGyro::m_Calibrating = false;
+uint16_t CowGyro::m_StartIndex = 0;
+uint16_t CowGyro::m_CurrentIndex = 0;
 
-SPI *CowGyro::m_Spi = 0;
+CowGyro* CowGyro::m_Instance = NULL;
+
+SPI *CowGyro::m_Spi = NULL;
 
 CowGyro::CowGyro()
 {
@@ -100,7 +105,7 @@ void CowGyro::Handle()
 
 		//std::cout << "Test from CowWebDebugger" << std::endl;
 		//sample the gyro for readings
-		std::this_thread::sleep_for(std::chrono::milliseconds((1 / K_READING_RATE) * 1000));
+		std::this_thread::sleep_for(std::chrono::milliseconds((5)));
 
 		int reading = GetReading();
 
@@ -134,49 +139,64 @@ void CowGyro::Handle()
 		}
 
 		double unbiasedAngleRate = CowGyro::ExtractAngleRate(reading);
-		m_ZeroRatesSamples[m_ZeroRateSampleIndex] = unbiasedAngleRate;
-		m_ZeroRateSampleIndex++;
 
-		if(m_ZeroRateSampleIndex >= K_ZEROING_SAMPLES)
+		if(m_Calibrating)
 		{
-			m_ZeroRateSampleIndex = 0;
-			m_HasEnoughZeroingSamples = true;
-		}
-
-		if(!m_IsZeroed)
-		{
-			if(!m_HasEnoughZeroingSamples)
+			m_ZeroRatesSamples[m_CurrentIndex] = unbiasedAngleRate;
+			m_CurrentIndex++;
+			if(m_CurrentIndex >= K_ZEROING_SAMPLES)
 			{
-				continue;
+				m_CurrentIndex = 0;
+				std::cout << "Enough samples have been collected" << std::endl;
 			}
-
-			m_ZeroBias = 0;
-
-			for(int i = 0; i < K_ZEROING_SAMPLES; i++)
-			{
-				m_ZeroBias += (m_ZeroRatesSamples[i] / K_ZEROING_SAMPLES);
-			}
-
-			m_Angle = 0;
-			m_VolatileAngle = 0;
-			Reset();
-			m_IsZeroed = true;
 		}
 
-		double currentTime = Timer::GetFPGATimestamp();
-		double timeElapsed = currentTime - m_LastTime;
-		m_LastTime = currentTime;
+//		m_ZeroRatesSamples[m_ZeroRateSampleIndex] = unbiasedAngleRate;
+//		m_ZeroRateSampleIndex++;
 
-		m_VolatileRate = unbiasedAngleRate - m_ZeroBias;
+//		if(m_ZeroRateSampleIndex >= K_ZEROING_SAMPLES)
+//		{
+//			m_ZeroRateSampleIndex = 0;
+//			m_HasEnoughZeroingSamples = true;
+//		}
 
-		// Don't integrate anything less than 80 LSB / degree / sec
-		if(fabs(m_VolatileRate) < 0.0125)
+//		if(!m_IsZeroed)
+//		{
+//			if(!m_HasEnoughZeroingSamples)
+//			{
+//				continue;
+//			}
+//
+//			m_ZeroBias = 0;
+//
+//			for(int i = 0; i < K_ZEROING_SAMPLES; i++)
+//			{
+//				m_ZeroBias += (m_ZeroRatesSamples[i] / K_ZEROING_SAMPLES);
+//			}
+//
+//			m_Angle = 0;
+//			m_VolatileAngle = 0;
+//			Reset();
+//			m_IsZeroed = true;
+//		}
+
+		if(m_IsZeroed)
 		{
-			m_VolatileRate = 0;
+			double currentTime = Timer::GetFPGATimestamp();
+			double timeElapsed = currentTime - m_LastTime;
+			m_LastTime = currentTime;
+
+			m_VolatileRate = unbiasedAngleRate - m_ZeroBias;
+
+			// Don't integrate anything less than 80 LSB / degree / sec
+			if(fabs(m_VolatileRate) < 0.0125)
+			{
+				m_VolatileRate = 0;
+			}
+			m_Angle += m_VolatileRate * timeElapsed;
+			m_VolatileAngle = m_Angle;
+			m_VolatileHasData = true;
 		}
-		m_Angle += m_VolatileRate * timeElapsed;
-		m_VolatileAngle = m_Angle;
-		m_VolatileHasData = true;
 	}
 }
 
@@ -369,6 +389,46 @@ std::vector<e_ErrorFlag> CowGyro::ExtractErrors(int result)
 void CowGyro::Reset()
 {
 	m_ZeroHeading = m_VolatileAngle;
+}
+
+void CowGyro::BeginCalibration()
+{
+	m_Calibrating = true;
+	m_ZeroBias = 0;
+	m_Angle = 0;
+	m_VolatileAngle = 0;
+	Reset();
+	m_IsZeroed = false;
+	m_CurrentIndex = 0;
+}
+
+void CowGyro::FinalizeCalibration()
+{
+	m_Calibrating = false;
+	m_IsZeroed = true;
+
+	//average the samples in circ buf
+	for(int i = 0; i < K_ZEROING_SAMPLES; ++i)
+	{
+		m_ZeroBias += (m_ZeroRatesSamples[i] / K_ZEROING_SAMPLES);
+		m_ZeroRatesSamples[i] = 0;
+	}
+
+	m_VolatileRate = 0;
+	m_Angle = 0;
+	m_LastTime = Timer::GetFPGATimestamp();
+	std::cout << "Finalized gyro, angle: " << m_Angle << " bias: " << m_ZeroBias << std::endl;
+	m_VolatileAngle = 0;
+}
+
+CowGyro* CowGyro::GetInstance()
+{
+	if(m_Instance == 0)
+	{
+		m_Instance = new CowGyro();
+	}
+
+	return m_Instance;
 }
 
 } /* namespace CowLib */

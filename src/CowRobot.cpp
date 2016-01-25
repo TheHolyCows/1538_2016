@@ -21,7 +21,7 @@ CowRobot::CowRobot()
 
 	m_LEDDisplay = new CowLib::CowAlphaNum(0x70);
 
-	m_Gyro = new CowLib::CowGyro();
+	m_Gyro = CowLib::CowGyro::GetInstance();
 	//m_Gyro->Reset();
 
 	m_DriveEncoder = new Encoder(MXP_DRIVE_A, MXP_DRIVE_B, true, Encoder::k1X);
@@ -88,7 +88,7 @@ void CowRobot::handle()
 	SetRightMotors(tmpRightMotor);
 	if(m_DSUpdateCount % 10 == 0)
 	{
-		printf("Gyro: %f\r\n", m_Gyro->GetAngle());
+		std::cout << "Gyro: " <<  m_Gyro->GetAngle() << std::endl;
 	}
 
 	m_DSUpdateCount++;

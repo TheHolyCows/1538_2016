@@ -34,16 +34,19 @@ void CowBase::RobotInit()
 void CowBase::DisabledInit()
 {
 	CowConstants::GetInstance()->RestoreData();
+	m_Bot->GetGyro()->BeginCalibration();
 }
 
 void CowBase::AutonomousInit()
 {
+	m_Bot->GetGyro()->FinalizeCalibration();
 	m_AutoController->SetCommandList(AutoModes::GetInstance()->GetCommandList());
 	m_Bot->SetController(m_AutoController);
 	m_Bot->Reset();
 }
 void CowBase::TeleopInit()
 {
+	m_Bot->GetGyro()->FinalizeCalibration();
 	m_Bot->SetController(m_OpController);
 }
 

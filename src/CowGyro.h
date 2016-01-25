@@ -43,7 +43,7 @@ private:
 	static const int SENSOR_DATA_CMD = 0x20000000;
 	static const int CHK_GENERATE_FAULTS_BIT = 0x03;
 	static const int32_t K_READING_RATE = 200;
-	static const int32_t K_ZEROING_SAMPLES = 6 * K_READING_RATE;
+	static const int32_t K_ZEROING_SAMPLES = 5 * K_READING_RATE;
 	static const int32_t K_STARTUP_SAMPLES = 2 * K_READING_RATE;
 
 	static std::atomic<bool> m_VolatileHasData;
@@ -54,11 +54,15 @@ private:
 	static int32_t m_RemainingStartupCycles;
 	static bool m_IsZeroed;
 	static double m_ZeroRatesSamples[K_ZEROING_SAMPLES];
-	static int32_t m_ZeroRateSampleIndex;
-	static bool m_HasEnoughZeroingSamples;
+	//static int32_t m_ZeroRateSampleIndex;
+	//static bool m_HasEnoughZeroingSamples;
 	static double m_ZeroBias;
 	static double m_Angle;
 	static double m_LastTime;
+	static bool m_Calibrating;
+	static uint16_t m_StartIndex;
+	static uint16_t m_CurrentIndex;
+	static CowGyro *m_Instance;
 public:
 	CowGyro();
 	virtual ~CowGyro();
@@ -73,6 +77,9 @@ public:
 	static void Reset();
 	static e_StatusFlag ExtractStatus(int32_t result);
 	static std::vector<e_ErrorFlag> ExtractErrors(int32_t result);
+	static void BeginCalibration();
+	static void FinalizeCalibration();
+	static CowGyro* GetInstance();
 private:
 	static int32_t DoTransaction(int32_t command);
 	static bool IsOddParity(int32_t word);

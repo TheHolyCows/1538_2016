@@ -76,7 +76,7 @@ public:
 
 	CowLib::CowGyro *GetGyro()
 	{
-		return m_Gyro;
+		return CowLib::CowGyro::GetInstance();
 	}
 
 	Encoder *GetEncoder()
