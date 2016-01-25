@@ -23,59 +23,36 @@ std::vector<e_ErrorFlag> CowGyro::m_ALL_ERRORS = {
 
 int32_t CowGyro::m_RemainingStartupCycles = CowGyro::K_STARTUP_SAMPLES;
 
-std::atomic<bool> CowGyro::m_VolatileHasData(false);
-double CowGyro::m_VolatileAngle = 0;
-double CowGyro::m_VolatileRate = 0;
-std::atomic<bool> CowGyro::m_VolatileShouldReZero(false);
-double CowGyro::m_ZeroHeading = 0;
-bool CowGyro::m_IsZeroed = false;
-double CowGyro::m_ZeroRatesSamples[K_ZEROING_SAMPLES];
-//int32_t CowGyro::m_ZeroRateSampleIndex = 0;
-//bool CowGyro::m_HasEnoughZeroingSamples = false;
-double CowGyro::m_ZeroBias = 0;
 double CowGyro::m_Angle = 0;
 double CowGyro::m_LastTime = 0;
+double CowGyro::m_VolatileRate = 0;
+double CowGyro::m_ZeroBias = 0;
+double CowGyro::m_ZeroRatesSamples[K_ZEROING_SAMPLES];
+
+bool CowGyro::m_IsZeroed = false;
 bool CowGyro::m_Calibrating = false;
-uint16_t CowGyro::m_StartIndex = 0;
+
 uint16_t CowGyro::m_CurrentIndex = 0;
 
 CowGyro* CowGyro::m_Instance = NULL;
-
-SPI *CowGyro::m_Spi = NULL;
+SPI*     CowGyro::m_Spi      = NULL;
 
 CowGyro::CowGyro()
 {
-//	DigitalOutput* pin25 = new DigitalOutput(25);
-//	DigitalOutput* pin23 = new DigitalOutput(23);
-//	DigitalOutput* pin21 = new DigitalOutput(21);
-//	DigitalOutput* pin19 = new DigitalOutput(19);
-//
-//	Wait(0.25);
-//
-//	pin25->Set(1);
-//	pin23->Set(1);
-//	pin21->Set(1);
-//	pin19->Set(1);
-//
-//	delete pin25;
-//	delete pin23;
-//	delete pin21;
-//	delete pin19;
-//
 	Wait(0.25);
 
 	m_Spi = new SPI(SPI::kMXP);
 	m_Spi->SetClockRate(4000000);
 	m_Spi->SetChipSelectActiveLow();
 	m_Spi->SetClockActiveHigh();
-	//m_Spi->SetSampleDataOnRising();
 	m_Spi->SetMSBFirst();
 	Wait(2);
 
 	m_Thread = new std::thread(CowGyro::Handle);
 }
 
-CowGyro::~CowGyro() {
+CowGyro::~CowGyro()
+{
 	m_Thread->detach();
 	delete m_Thread;
 }
@@ -102,10 +79,7 @@ void CowGyro::Handle()
 		{
 			m_LastTime = Timer::GetFPGATimestamp();
 		}
-
-		//std::cout << "Test from CowWebDebugger" << std::endl;
-		//sample the gyro for readings
-		std::this_thread::sleep_for(std::chrono::milliseconds((5)));
+		std::this_thread::sleep_for(std::chrono::milliseconds((int) (1.0 / ((float) K_READING_RATE)) * 1000));
 
 		int reading = GetReading();
 
@@ -115,13 +89,13 @@ void CowGyro::Handle()
 
 		if((e_StatusFlag::VALID_DATA != status) || !errors.empty())
 		{
-			// TODO need to print error list
 			std::cerr << "Results: " << reading << ". ";
 			std::cerr << "Gyro read failed. Status: " << status << ". Errors: " << errors.size();
-			for(int i = 0; i < errors.size(); i++)
+			for(uint32_t i = 0; i < errors.size(); i++)
 			{
-				std::cerr << " , " << i << ": " << errors[i] << std::endl;
+				std::cerr << " , " << i << ": " << errors[i];
 			}
+			std::cerr << std::endl;
 			continue;
 		}
 
@@ -131,15 +105,9 @@ void CowGyro::Handle()
 			continue;
 		}
 
-		if(m_VolatileShouldReZero)
-		{
-			m_VolatileShouldReZero = false;
-			m_VolatileHasData = false;
-			m_IsZeroed = false;
-		}
-
 		double unbiasedAngleRate = CowGyro::ExtractAngleRate(reading);
 
+		// Add zeroing samples if calibrating gyro
 		if(m_Calibrating)
 		{
 			m_ZeroRatesSamples[m_CurrentIndex] = unbiasedAngleRate;
@@ -151,35 +119,7 @@ void CowGyro::Handle()
 			}
 		}
 
-//		m_ZeroRatesSamples[m_ZeroRateSampleIndex] = unbiasedAngleRate;
-//		m_ZeroRateSampleIndex++;
-
-//		if(m_ZeroRateSampleIndex >= K_ZEROING_SAMPLES)
-//		{
-//			m_ZeroRateSampleIndex = 0;
-//			m_HasEnoughZeroingSamples = true;
-//		}
-
-//		if(!m_IsZeroed)
-//		{
-//			if(!m_HasEnoughZeroingSamples)
-//			{
-//				continue;
-//			}
-//
-//			m_ZeroBias = 0;
-//
-//			for(int i = 0; i < K_ZEROING_SAMPLES; i++)
-//			{
-//				m_ZeroBias += (m_ZeroRatesSamples[i] / K_ZEROING_SAMPLES);
-//			}
-//
-//			m_Angle = 0;
-//			m_VolatileAngle = 0;
-//			Reset();
-//			m_IsZeroed = true;
-//		}
-
+		// Calculate
 		if(m_IsZeroed)
 		{
 			double currentTime = Timer::GetFPGATimestamp();
@@ -194,8 +134,6 @@ void CowGyro::Handle()
 				m_VolatileRate = 0;
 			}
 			m_Angle += m_VolatileRate * timeElapsed;
-			m_VolatileAngle = m_Angle;
-			m_VolatileHasData = true;
 		}
 	}
 }
@@ -236,8 +174,6 @@ bool CowGyro::InitializeGyro()
 		return false;
 	}
 
-	// TODO need to find something to compare two lists things
-
 	std::vector<e_ErrorFlag> errors = ExtractErrors(selfCheckResult);
 	bool containsAllErrors = std::includes(m_ALL_ERRORS.begin(), m_ALL_ERRORS.end(), errors.begin(), errors.end());
 	if(!containsAllErrors)
@@ -253,6 +189,16 @@ bool CowGyro::InitializeGyro()
 		std::cerr << "Gyro second self test read failed: 0x" << std::hex << selfCheckResult << std::endl;
 		return false;
 	}
+
+	// Clear the latched self-test data
+	selfCheckResult = DoTransaction(SENSOR_DATA_CMD);
+	if(ExtractStatus(selfCheckResult) != SELF_TEST_DATA)
+	{
+		std::cerr << "Gyro third self test read failed: 0x" << std::hex << selfCheckResult << std::endl;
+		return false;
+	}
+
+
 
 	return true;
 }
@@ -276,18 +222,12 @@ int16_t CowGyro::DoRead(int8_t address)
 double CowGyro::ExtractAngleRate(int32_t result)
 {
 	int16_t reading = (int16_t) ((result >> 10) & 0xFFFF);
-	//std::cerr << "extracting angle rate: " << reading << ", result: " << result << std::endl;
 	return ((double)(reading) / 80.0);
 }
 
 int16_t CowGyro::ReadPartId()
 {
 	return DoRead((int8_t) 0x0C);
-}
-
-int32_t CowGyro::ReadSerialNumber()
-{
-	return (((int32_t) DoRead((int8_t) 0x0E)) << 16) | (int32_t) DoRead((int8_t) 0x10);
 }
 
 int32_t CowGyro::GetReading()
@@ -302,6 +242,8 @@ int32_t CowGyro::DoTransaction(int32_t command)
 		command |= 0x01;
 	}
 	uint8_t commandArray[4];
+
+	// Convert command into byte array
 	commandArray[0] = (command >> 24) & 0xFF;
 	commandArray[1] = (command >> 16) & 0xFF;
 	commandArray[2] = (command >> 8) & 0xFF;
@@ -317,11 +259,12 @@ int32_t CowGyro::DoTransaction(int32_t command)
 	}
 
 	int32_t result = 0;
+
+	// Convert resultBuffer into int
 	result = (int32_t) resultBuffer[3];
 	result |= (resultBuffer[0] << 24);
 	result |= (resultBuffer[1] << 16);
 	result |= (resultBuffer[2] << 8);
-	//int32_t oddParityCheck = (result & 0xFFFF0000);
 
 	if(!IsOddParity(result))
 	{
@@ -388,18 +331,17 @@ std::vector<e_ErrorFlag> CowGyro::ExtractErrors(int result)
 
 void CowGyro::Reset()
 {
-	m_ZeroHeading = m_VolatileAngle;
+	m_Angle = 0;
+	m_CurrentIndex = 0;
+	m_VolatileRate = 0;
+	m_ZeroBias = 0;
 }
 
 void CowGyro::BeginCalibration()
 {
 	m_Calibrating = true;
-	m_ZeroBias = 0;
-	m_Angle = 0;
-	m_VolatileAngle = 0;
-	Reset();
 	m_IsZeroed = false;
-	m_CurrentIndex = 0;
+	Reset();
 }
 
 void CowGyro::FinalizeCalibration()
@@ -407,18 +349,15 @@ void CowGyro::FinalizeCalibration()
 	m_Calibrating = false;
 	m_IsZeroed = true;
 
-	//average the samples in circ buf
+	// Average the samples in circular buffer
 	for(int i = 0; i < K_ZEROING_SAMPLES; ++i)
 	{
 		m_ZeroBias += (m_ZeroRatesSamples[i] / K_ZEROING_SAMPLES);
 		m_ZeroRatesSamples[i] = 0;
 	}
 
-	m_VolatileRate = 0;
-	m_Angle = 0;
 	m_LastTime = Timer::GetFPGATimestamp();
-	std::cout << "Finalized gyro, angle: " << m_Angle << " bias: " << m_ZeroBias << std::endl;
-	m_VolatileAngle = 0;
+	//std::cout << "Finalized gyro, angle: " << m_Angle << " bias: " << m_ZeroBias << std::endl;
 }
 
 CowGyro* CowGyro::GetInstance()
