@@ -168,6 +168,12 @@ void CowGyro::Handle()
 		m_LastTime = currentTime;
 
 		m_VolatileRate = unbiasedAngleRate - m_ZeroBias;
+
+		// Don't integrate anything less than 80 LSB / degree / sec
+		if(fabs(m_VolatileRate) < 0.0125)
+		{
+			m_VolatileRate = 0;
+		}
 		m_Angle += m_VolatileRate * timeElapsed;
 		m_VolatileAngle = m_Angle;
 		m_VolatileHasData = true;
@@ -188,11 +194,11 @@ bool CowGyro::InitializeGyro()
 {
 	// Start a self-check
 	int32_t result = DoTransaction(SENSOR_DATA_CMD | CHK_GENERATE_FAULTS_BIT);
-	if(result != 1)
-	{
-		std::cerr << "Unexpected self check response " << std::hex << result << std::endl;
-		return false;
-	}
+//	if(result != 1)
+//	{
+//		std::cerr << "Unexpected self check response " << std::hex << result << std::endl;
+//		return false;
+//	}
 
 	// Wait for the fault conditions to occur
 	std::this_thread::sleep_for(std::chrono::milliseconds(50));
