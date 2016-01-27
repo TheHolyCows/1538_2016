@@ -59,6 +59,7 @@ private:
 	static double m_ZeroRatesSamples[K_ZEROING_SAMPLES];
 
 	static bool m_Calibrating;
+	static bool m_HasEnoughZeroingSamples;
 	static bool m_IsZeroed;
 
 	static uint16_t m_CurrentIndex;

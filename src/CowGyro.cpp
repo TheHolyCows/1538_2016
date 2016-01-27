@@ -31,6 +31,7 @@ double CowGyro::m_ZeroRatesSamples[K_ZEROING_SAMPLES];
 
 bool CowGyro::m_IsZeroed = false;
 bool CowGyro::m_Calibrating = false;
+bool CowGyro::m_HasEnoughZeroingSamples = false;
 
 uint16_t CowGyro::m_CurrentIndex = 0;
 
@@ -79,7 +80,8 @@ void CowGyro::Handle()
 		{
 			m_LastTime = Timer::GetFPGATimestamp();
 		}
-		std::this_thread::sleep_for(std::chrono::milliseconds((int) (1.0 / ((float) K_READING_RATE)) * 1000));
+
+		std::this_thread::sleep_for(std::chrono::milliseconds((int) ((1.0 / K_READING_RATE) * 1000)));
 
 		int reading = GetReading();
 
@@ -115,7 +117,7 @@ void CowGyro::Handle()
 			if(m_CurrentIndex >= K_ZEROING_SAMPLES)
 			{
 				m_CurrentIndex = 0;
-				std::cout << "Enough samples have been collected" << std::endl;
+				m_HasEnoughZeroingSamples = true;
 			}
 		}
 
@@ -190,13 +192,13 @@ bool CowGyro::InitializeGyro()
 		return false;
 	}
 
-	// Clear the latched self-test data
-	selfCheckResult = DoTransaction(SENSOR_DATA_CMD);
-	if(ExtractStatus(selfCheckResult) != SELF_TEST_DATA)
-	{
-		std::cerr << "Gyro third self test read failed: 0x" << std::hex << selfCheckResult << std::endl;
-		return false;
-	}
+//	// Clear the latched self-test data
+//	selfCheckResult = DoTransaction(SENSOR_DATA_CMD);
+//	if(ExtractStatus(selfCheckResult) != SELF_TEST_DATA)
+//	{
+//		std::cerr << "Gyro third self test read failed: 0x" << std::hex << selfCheckResult << std::endl;
+//		return false;
+//	}
 
 
 
@@ -349,14 +351,28 @@ void CowGyro::FinalizeCalibration()
 	m_Calibrating = false;
 	m_IsZeroed = true;
 
+	int32_t index = m_CurrentIndex;
+
+	if(m_HasEnoughZeroingSamples)
+	{
+		index = K_ZEROING_SAMPLES;
+		m_HasEnoughZeroingSamples = false;
+		std::cout << "Have enough zeroing samples!" << std::endl;
+	}
+	else
+	{
+		std::cout << "DO NOT have enough zeoring samples, got " << std::dec << index << std::endl;
+	}
+
 	// Average the samples in circular buffer
-	for(int i = 0; i < K_ZEROING_SAMPLES; ++i)
+	for(int i = 0; i < index; ++i)
 	{
 		m_ZeroBias += (m_ZeroRatesSamples[i] / K_ZEROING_SAMPLES);
 		m_ZeroRatesSamples[i] = 0;
 	}
 
 	m_LastTime = Timer::GetFPGATimestamp();
+
 	//std::cout << "Finalized gyro, angle: " << m_Angle << " bias: " << m_ZeroBias << std::endl;
 }
 
