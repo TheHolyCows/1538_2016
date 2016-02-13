@@ -23,28 +23,17 @@
 #define DRIVE_RIGHT_A					4
 #define DRIVE_RIGHT_B					5
 #define DRIVE_RIGHT_C					6
-#define UNUSED_CAN						7
-#define PINCHER_A						8
-#define PINCHER_B						9
-#define LEFT_INTAKE						10
-#define RIGHT_INTAKE					11
-#define HSPOOL_A						12
-#define VSPOOL_A						13
-#define VSPOOL_B						14
-#define CANBURGLAR_A					7
-#define CANBURGLAR_B					4
 
-
-#define MXP_DRIVE_A						12
-#define MXP_DRIVE_B						13
-#define MXP_GRABBER_A					14
-#define MXP_GRABBER_B					15
-#define MXP_HSPOOL_A					16
-#define MXP_HSPOOL_B					17
-#define MXP_VSPOOL_A					18
-#define MXP_VSPOOL_B					19
-
-#define MXP_GRAB_SWITCH					16
+#define MXP_QEI_1_A						10
+#define MXP_QEI_1_B						11
+#define MXP_QEI_2_A						12
+#define MXP_QEI_2_B						13
+#define MXP_QEI_3_A						18
+#define MXP_QEI_3_B						19
+#define MXP_QEI_4_A						20
+#define MXP_QEI_4_B						21
+#define MXP_QEI_5_A						22
+#define MXP_QEI_5_B						23
 
 // Analog inputs
 #define ANALOG_GYRO						0

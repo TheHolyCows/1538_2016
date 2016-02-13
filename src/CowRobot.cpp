@@ -24,8 +24,14 @@ CowRobot::CowRobot()
 	m_Gyro = CowLib::CowGyro::GetInstance();
 	//m_Gyro->Reset();
 
-	m_DriveEncoder = new Encoder(MXP_DRIVE_A, MXP_DRIVE_B, true, Encoder::k1X);
+	m_DriveEncoder = new Encoder(MXP_QEI_1_A, MXP_QEI_1_B, true, Encoder::k1X);
 	m_DriveEncoder->SetDistancePerPulse(0.03490658503); // 4*pi/360
+
+	m_QEI2 = new Encoder(MXP_QEI_2_A, MXP_QEI_2_B, true, Encoder::k1X);
+	m_QEI3 = new Encoder(MXP_QEI_3_A, MXP_QEI_3_B, true, Encoder::k1X);
+	m_QEI4 = new Encoder(MXP_QEI_4_A, MXP_QEI_4_B, true, Encoder::k1X);
+	m_QEI5 = new Encoder(MXP_QEI_5_A, MXP_QEI_5_B, true, Encoder::k1X);
+
 
 	m_PowerDistributionPanel = new PowerDistributionPanel();
 	m_WebServer = new CowLib::CowWebDebugger();
@@ -89,6 +95,11 @@ void CowRobot::handle()
 	if(m_DSUpdateCount % 10 == 0)
 	{
 		std::cout << "Gyro: " <<  m_Gyro->GetAngle() << std::endl;
+		std::cout << m_DriveEncoder->Get() << " "
+				  << m_QEI2->Get() << " "
+				  << m_QEI3->Get() << " "
+				  << m_QEI4->Get() << " "
+				  << m_QEI5->Get() << std::endl << std::endl;
 	}
 
 	m_DSUpdateCount++;

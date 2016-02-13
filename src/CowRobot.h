@@ -34,6 +34,12 @@ private:
 	
 	CowLib::CowGyro *m_Gyro;
 	Encoder *m_DriveEncoder;
+	Encoder *m_QEI2;
+	Encoder *m_QEI3;
+	Encoder *m_QEI4;
+	Encoder *m_QEI5;
+
+
 
 	PowerDistributionPanel *m_PowerDistributionPanel;
 
