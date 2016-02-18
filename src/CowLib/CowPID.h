@@ -10,28 +10,45 @@
 
 #include <cmath>
 #include <cfloat>
+#include <string>
 
 namespace CowLib {
 
 class CowPID {
 public:
-	CowPID();
+	CowPID(double P, double I, double D);
 	virtual ~CowPID();
+	double Calculate(double input);
+	double GetError();
+	double GetSetpoint();
+	void SetSetpoint(double setpoint);
+
+	void Reset();
+	bool OnTarget(double tolerance);
+	void ResetIntegrator();
+	std::string GetState();
+
+	void SetContinuous(bool continuous);
+	void SetInputRange(double min, double max);
+	void SetOutputRange(double min, double max);
+
 private:
+	CowPID();
+
     double m_P;            // factor for "proportional" control
     double m_I;            // factor for "integral" control
     double m_D;            // factor for "derivative" control
-    double m_maximumOutput = 1.0;    // |maximum output|
-    double m_minimumOutput = -1.0;    // |minimum output|
-    double m_maximumInput = 0.0;        // maximum input - limit setpoint to this
-    double m_minimumInput = 0.0;        // minimum input - limit setpoint to this
-    bool m_continuous = false;    // do the endpoints wrap around? eg. Absolute encoder
-    double m_prevError = 0.0;    // the prior sensor input (used to compute velocity)
-    double m_totalError = 0.0; //the sum of the errors for use in the integral calc
-    double m_setpoint = 0.0;
-    double m_error = 0.0;
-    double m_result = 0.0;
-   //` double m_last_input = std::nan;
+    double m_maximumOutput;    // |maximum output|
+    double m_minimumOutput;    // |minimum output|
+    double m_maximumInput;        // maximum input - limit setpoint to this
+    double m_minimumInput;        // minimum input - limit setpoint to this
+    bool m_continuous;    // do the endpoints wrap around? eg. Absolute encoder
+    double m_prevError;    // the prior sensor input (used to compute velocity)
+    double m_totalError; //the sum of the errors for use in the integral calc
+    double m_setpoint;
+    double m_error;
+    double m_result;
+    double m_last_input;
 };
 
 } /* namespace CowLib */

@@ -14,6 +14,10 @@
 #include "CowLib/CowAlphaNum.h"
 #include "CowLib/CowWebDebugger.h"
 #include "CowGyro.h"
+#include "Subsystems/Arm.h"
+#include "Subsystems/CenteringIntake.h"
+#include "Subsystems/Intake.h"
+#include "Subsystems/Shooter.h"
 
 class CowRobot
 {
@@ -39,7 +43,10 @@ private:
 	Encoder *m_QEI4;
 	Encoder *m_QEI5;
 
-
+	Arm* m_Arm;
+	CenteringIntake* m_CenteringIntake;
+	Intake*	m_Intake;
+	Shooter* m_Shooter;
 
 	PowerDistributionPanel *m_PowerDistributionPanel;
 
@@ -89,6 +96,29 @@ public:
 	{
 		return m_DriveEncoder;
 	}
+
+	Arm *GetArm()
+	{
+		return m_Arm;
+	}
+
+	CenteringIntake *GetCenteringIntake()
+	{
+		return m_CenteringIntake;
+	}
+
+	Intake *GetIntake()
+	{
+		return m_Intake;
+	}
+
+	Shooter *GetShooter()
+	{
+		return m_Shooter;
+	}
+
+
+
 
 	void handle();
 };

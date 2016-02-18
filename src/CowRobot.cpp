@@ -19,6 +19,11 @@ CowRobot::CowRobot()
 	m_RightDriveB = new CANTalon(DRIVE_RIGHT_B);
 	m_RightDriveC = new CANTalon(DRIVE_RIGHT_C);
 
+	m_Arm = new Arm(ARM_A, ARM_B);
+	m_CenteringIntake = new CenteringIntake(LEFT_CENTER, RIGHT_CENTER);
+	m_Intake = new Intake(INTAKE_A, INTAKE_B);
+	m_Shooter = new Shooter(SHOOTER_A, SHOOTER_B);
+
 	m_LEDDisplay = new CowLib::CowAlphaNum(0x70);
 
 	m_Gyro = CowLib::CowGyro::GetInstance();
@@ -86,6 +91,11 @@ void CowRobot::handle()
 	//printf("Handling...\n");
 	m_Controller->handle(this);
 	
+	m_Arm->Handle();
+	m_CenteringIntake->Handle();
+	m_Intake->Handle();
+	m_Shooter->Handle();
+
 	// Default drive
 	float tmpLeftMotor = m_LeftDriveValue;
 	float tmpRightMotor = m_RightDriveValue;
@@ -246,7 +256,7 @@ void CowRobot::SetLeftMotors(float val)
 		val = -1.0;
 
 	m_LeftDriveA->Set(val);
-	m_LeftDriveB->Set(-val);
+	m_LeftDriveB->Set(val);
 	m_LeftDriveC->Set(-val);
 
 }
@@ -260,7 +270,7 @@ void CowRobot::SetRightMotors(float val)
 		val = -1.0;
 
 	m_RightDriveA->Set(val);
-	m_RightDriveB->Set(val);
+	m_RightDriveB->Set(-val);
 	m_RightDriveC->Set(-val);
 }
 
