@@ -38,13 +38,16 @@ void Intake::Handle()
 {
 	if(m_MotorA && m_MotorB)
 	{
-		float amps = (m_MotorA->GetOutputCurrent() +
-						m_MotorB->GetOutputCurrent())/2.0;
-		//std::cout << "Amps: " << amps << std::endl;
-
 		m_MotorA->Set(m_Speed);
 		m_MotorB->Set(m_Speed);
 	}
+}
+
+double Intake::GetCurrent()
+{
+	float amps = (m_MotorA->GetOutputCurrent() +
+					m_MotorB->GetOutputCurrent())/2.0;
+	return amps;
 }
 
 Intake::~Intake() {

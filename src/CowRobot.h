@@ -15,6 +15,7 @@
 #include "CowLib/CowWebDebugger.h"
 #include "CowGyro.h"
 #include "Subsystems/Arm.h"
+#include "Subsystems/BallHandler.h"
 #include "Subsystems/CenteringIntake.h"
 #include "Subsystems/Intake.h"
 #include "Subsystems/Shooter.h"
@@ -43,10 +44,11 @@ private:
 	Encoder *m_QEI4;
 	Encoder *m_QEI5;
 
-	Arm* m_Arm;
-	CenteringIntake* m_CenteringIntake;
-	Intake*	m_Intake;
-	Shooter* m_Shooter;
+	Arm *m_Arm;
+	CenteringIntake *m_CenteringIntake;
+	Intake *m_Intake;
+	Shooter *m_Shooter;
+	BallHandler *m_BallHandler;
 
 	PowerDistributionPanel *m_PowerDistributionPanel;
 
@@ -117,7 +119,10 @@ public:
 		return m_Shooter;
 	}
 
-
+	BallHandler *GetBallHandler()
+	{
+		return m_BallHandler;
+	}
 
 
 	void handle();

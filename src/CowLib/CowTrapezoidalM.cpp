@@ -34,7 +34,7 @@ void CowTrapezoidalM::SetSetpoint(double setPoint)
 double CowTrapezoidalM::Calculate(double currentPosition)
 {
 	double totalDistance = m_Setpoint - m_StartingPosition;
-	double distanceToGo = m_Setpoint - currentPosition
+	double distanceToGo = m_Setpoint - currentPosition;
 
 	double holdPeriod = 1 - (1 * m_DecelSlope) - (1 * m_AccelSlope);
 	double decelPeriod = 1 - holdPeriod - (1 * m_AccelSlope);

@@ -23,6 +23,7 @@ CowRobot::CowRobot()
 	m_CenteringIntake = new CenteringIntake(LEFT_CENTER, RIGHT_CENTER);
 	m_Intake = new Intake(INTAKE_A, INTAKE_B);
 	m_Shooter = new Shooter(SHOOTER_A, SHOOTER_B);
+	m_BallHandler = new BallHandler(m_CenteringIntake, m_Intake, m_Shooter);
 
 	m_LEDDisplay = new CowLib::CowAlphaNum(0x70);
 
@@ -92,9 +93,10 @@ void CowRobot::handle()
 	m_Controller->handle(this);
 	
 	m_Arm->Handle();
-	m_CenteringIntake->Handle();
-	m_Intake->Handle();
-	m_Shooter->Handle();
+	//m_CenteringIntake->Handle();
+	//m_Intake->Handle();
+	//m_Shooter->Handle();
+	m_BallHandler->Handle();
 
 	// Default drive
 	float tmpLeftMotor = m_LeftDriveValue;

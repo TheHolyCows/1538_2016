@@ -9,7 +9,7 @@
 #define SRC_COWLIB_COWTRAPEZOIDALM_H_
 
 #include <WPILib.h>
-#include <math>
+#include <cmath>
 
 namespace CowLib {
 

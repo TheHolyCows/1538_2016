@@ -1,4 +1,5 @@
 #include "OperatorController.h"
+#include "Subsystems/BallHandler.h"
 
 OperatorController::OperatorController(CowControlBoard *controlboard)
 	:
@@ -16,32 +17,31 @@ void OperatorController::handle(CowRobot *bot)
 
 	bot->GetArm()->SetManualSpeed(armJoystick);
 
+	// Intake
 	if(m_CB->GetOperatorButton(5))
 	{
-		bot->GetIntake()->SetManualSpeed(1);
-		bot->GetCenteringIntake()->SetManualSpeed(1);
-	}
-	else
-	{
-		if(!bot->GetIntake()->IsInAutoMode())
+		//bot->GetIntake()->SetManualSpeed(1);
+		//bot->GetCenteringIntake()->SetManualSpeed(1);
+
+		if(bot->GetBallHandler()->GetState() == SPOOL_SHOOTER)
 		{
-			bot->GetIntake()->SetManualSpeed(0);
+			bot->GetBallHandler()->SetState(SHOOT);
 		}
-		bot->GetCenteringIntake()->SetManualSpeed(0);
+		else
+		{
+			bot->GetBallHandler()->SetState(INTAKE);
+		}
 	}
 
-	if(m_CB->GetOperatorButton(10))
+	// Turn on Shooter
+	if((bot->GetBallHandler()->GetState() >= BALL_AND_WAIT) && (m_CB->GetOperatorButton(10)))
 	{
-		bot->GetShooter()->SetManualSpeed(1);
+		//bot->GetShooter()->SetManualSpeed(1);
+		bot->GetBallHandler()->SetState(SPOOL_SHOOTER);
 	}
-	else if(m_CB->GetOperatorButton(9))
+	else if(!m_CB->GetOperatorButton(10))
 	{
-		bot->GetShooter()->SetManualSpeed(-0.5);
-		bot->GetIntake()->SetManualSpeed(-1);
-	}
-	else
-	{
-		bot->GetShooter()->SetManualSpeed(0);
+		bot->GetBallHandler()->SetState(NO_BALL_AND_WAIT);
 	}
 
 }
