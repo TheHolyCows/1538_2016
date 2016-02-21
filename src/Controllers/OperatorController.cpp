@@ -8,6 +8,9 @@ OperatorController::OperatorController(CowControlBoard *controlboard)
 	m_IntakeLatch = new CowLib::CowLatch();
 	m_ShootLatch = new CowLib::CowLatch();
 	m_SpoolShooterLatch = new CowLib::CowLatch();
+	m_PtoLockLatch = new CowLib::CowLatch();
+	m_PtoNeutralLatch = new CowLib::CowLatch();
+	m_PtoEngageLatch = new CowLib::CowLatch();
 }
 
 void OperatorController::handle(CowRobot *bot)
@@ -81,5 +84,40 @@ void OperatorController::handle(CowRobot *bot)
 		m_SpoolShooterLatch->ResetLatch();
 	}
 
+	// Buttons to test PTO states
+
+	// PTO Lock state
+	if(m_PtoLockLatch->Latch(m_CB->GetOperatorButton(1)))
+	{
+		std::cout << "Setting state to PTO LOCK" << std::endl;
+
+		bot->GetCowPTO()->SetState(LOCK);
+	}
+	else if(!m_CB->GetOperatorButton(1))
+	{
+		m_PtoLockLatch->ResetLatch();
+	}
+
+	if(m_PtoNeutralLatch->Latch(m_CB->GetOperatorButton(3)))
+	{
+		std::cout << "Setting state to PTO NEUTRAL" << std::endl;
+
+		bot->GetCowPTO()->SetState(ENTER_NEUTRAL);
+	}
+	else if(!m_CB->GetOperatorButton(3))
+	{
+		m_PtoNeutralLatch->ResetLatch();
+	}
+
+	if(m_PtoEngageLatch->Latch(m_CB->GetOperatorButton(4)))
+	{
+		std::cout << "Setting state to PTO ENGAGE" << std::endl;
+
+		bot->GetCowPTO()->SetState(ENGAGE);
+	}
+	else if(!m_CB->GetOperatorButton(4))
+	{
+		m_PtoEngageLatch->ResetLatch();
+	}
 }
 

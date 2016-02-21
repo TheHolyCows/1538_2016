@@ -33,6 +33,10 @@ CowRobot::CowRobot()
 	m_Shooter = new Shooter(SHOOTER_A, SHOOTER_B);
 	m_BallHandler = new BallHandler(m_CenteringIntake, m_Intake, m_Shooter);
 
+	m_SolenoidLeft = new Solenoid(SOLENOID_LEFT);
+	m_SolenoidRight = new Solenoid(SOLENOID_RIGHT);
+	m_CowPTO = new CowPTO(m_SolenoidLeft, m_SolenoidRight);
+
 	m_LEDDisplay = new CowLib::CowAlphaNum(0x70);
 
 	m_Gyro = CowLib::CowGyro::GetInstance();
@@ -96,6 +100,8 @@ void CowRobot::handle()
 	m_Intake->Handle();
 	m_Shooter->Handle();
 	m_BallHandler->Handle();
+
+	m_CowPTO->Handle();
 
 	// Default drive
 	float tmpLeftMotor = m_LeftDriveValue;

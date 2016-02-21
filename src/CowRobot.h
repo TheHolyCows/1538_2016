@@ -19,6 +19,7 @@
 #include "Subsystems/CenteringIntake.h"
 #include "Subsystems/Intake.h"
 #include "Subsystems/Shooter.h"
+#include "CowPTO.h"
 
 class CowRobot
 {
@@ -49,6 +50,10 @@ private:
 	Intake *m_Intake;
 	Shooter *m_Shooter;
 	BallHandler *m_BallHandler;
+
+	Solenoid *m_SolenoidLeft;
+	Solenoid *m_SolenoidRight;
+	CowPTO *m_CowPTO;
 
 	PowerDistributionPanel *m_PowerDistributionPanel;
 
@@ -124,6 +129,10 @@ public:
 		return m_BallHandler;
 	}
 
+	CowPTO *GetCowPTO()
+	{
+		return m_CowPTO;
+	}
 
 	void handle();
 };

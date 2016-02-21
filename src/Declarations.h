@@ -55,4 +55,7 @@
 // Digital inputs
 #define DIGITAL_PRESSURE_SWITCH			1
 
+#define SOLENOID_LEFT					7
+#define SOLENOID_RIGHT					6
+
 #endif

@@ -23,6 +23,9 @@ private:
 	CowLib::CowLatch *m_IntakeLatch;
 	CowLib::CowLatch *m_ShootLatch;
 	CowLib::CowLatch *m_SpoolShooterLatch;
+	CowLib::CowLatch *m_PtoLockLatch;
+	CowLib::CowLatch *m_PtoNeutralLatch;
+	CowLib::CowLatch *m_PtoEngageLatch;
 
 public:
 	OperatorController(CowControlBoard *controlboard);
