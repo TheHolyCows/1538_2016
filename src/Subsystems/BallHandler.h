@@ -14,8 +14,10 @@
 
 typedef enum
 {
+   NONE = 0,
    NO_BALL_AND_WAIT,
    INTAKE,
+   INTAKE_MOAR,
    STAGE,
    BALL_AND_WAIT,
    SPOOL_SHOOTER,
@@ -37,6 +39,7 @@ private:
    Intake* m_Intake;
    Shooter* m_Shooter;
    double m_StartTimeShooter;
+   double m_StartTimeIntake;
 };
 
 #endif /* SRC_SUBSYSTEMS_BALLHANDLER_H_ */

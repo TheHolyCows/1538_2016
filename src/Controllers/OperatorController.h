@@ -12,12 +12,18 @@
 #include "../CowLib/CowLib.h"
 #include "../Declarations.h"
 #include "../CowConstants.h"
+#include "../CowLib/CowLatch.h"
 
 class OperatorController : public GenericController
 {	
 private:
 	OperatorController();
 	CowControlBoard *m_CB;
+
+	CowLib::CowLatch *m_IntakeLatch;
+	CowLib::CowLatch *m_ShootLatch;
+	CowLib::CowLatch *m_SpoolShooterLatch;
+
 public:
 	OperatorController(CowControlBoard *controlboard);
 	void handle(CowRobot *bot);

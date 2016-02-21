@@ -24,6 +24,7 @@ void Shooter::SetManualSpeed(float speed)
 
 void Shooter::Handle()
 {
+	//(rate/360)rps
 	if(m_MotorA && m_MotorB)
 	{
 		m_MotorA->Set(m_Speed);

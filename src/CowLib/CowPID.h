@@ -16,7 +16,7 @@ namespace CowLib {
 
 class CowPID {
 public:
-	CowPID(double P, double I, double D);
+	CowPID(double Kp, double Ki, double Kd, double Kf);
 	virtual ~CowPID();
 	double Calculate(double input);
 	double GetError();
@@ -32,12 +32,15 @@ public:
 	void SetInputRange(double min, double max);
 	void SetOutputRange(double min, double max);
 
+	void UpdateConstants(double Kp, double Ki, double Kd, double Kf);
+
 private:
 	CowPID();
 
     double m_P;            // factor for "proportional" control
     double m_I;            // factor for "integral" control
     double m_D;            // factor for "derivative" control
+	double m_F;			//factor for "feedforward"
     double m_maximumOutput;    // |maximum output|
     double m_minimumOutput;    // |minimum output|
     double m_maximumInput;        // maximum input - limit setpoint to this

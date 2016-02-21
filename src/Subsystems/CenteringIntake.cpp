@@ -4,7 +4,7 @@
  *  Created on: Feb 17, 2016
  *      Author: kchau
  */
-
+#include <WPILib.h>
 #include <Subsystems/CenteringIntake.h>
 
 CenteringIntake::CenteringIntake(uint8_t leftMotor, uint8_t rightMotor)

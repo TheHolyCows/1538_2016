@@ -78,7 +78,7 @@ void CowBase::DisabledPeriodic()
 
 		if(m_ControlBoard->GetDriveButton(1))
 		{
-			//m_Bot->Reset();
+			m_Bot->Reset();
 			AutoModes::GetInstance()->NextMode();
 		}
 	}

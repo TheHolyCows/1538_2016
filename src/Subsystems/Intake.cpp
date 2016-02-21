@@ -38,8 +38,8 @@ void Intake::Handle()
 {
 	if(m_MotorA && m_MotorB)
 	{
-		m_MotorA->Set(m_Speed);
-		m_MotorB->Set(m_Speed);
+		m_MotorA->Set(-m_Speed);
+		m_MotorB->Set(-m_Speed);
 	}
 }
 
