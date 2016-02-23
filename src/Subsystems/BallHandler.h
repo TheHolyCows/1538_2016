@@ -20,10 +20,17 @@ typedef enum
    INTAKE_MOAR,
    STAGE,
    BALL_AND_WAIT,
-   SPOOL_SHOOTER,
    SHOOT
 
 } e_BallHandleState;
+
+typedef enum
+{
+   SHOOTER_NONE = 0,
+   MANUAL_CONTROL,
+   SPOOL_PID_CONTROL
+
+} e_ShooterState;
 
 class BallHandler
 {
@@ -33,8 +40,11 @@ public:
    void Handle();
    e_BallHandleState GetState();
    void SetState(e_BallHandleState state);
+   void SetShooterState(e_ShooterState state);
+
 private:
    e_BallHandleState m_State;
+   e_ShooterState m_ShooterState;
    CenteringIntake* m_CenteringIntake;
    Intake* m_Intake;
    Shooter* m_Shooter;

@@ -30,7 +30,7 @@ CowRobot::CowRobot()
 	m_Arm = new Arm(ARM_A, ARM_B, m_QEI2);
 	m_CenteringIntake = new CenteringIntake(LEFT_CENTER, RIGHT_CENTER);
 	m_Intake = new Intake(INTAKE_A, INTAKE_B);
-	m_Shooter = new Shooter(SHOOTER_A, SHOOTER_B);
+	m_Shooter = new Shooter(SHOOTER_A, SHOOTER_B, m_QEI4, m_QEI3);
 	m_BallHandler = new BallHandler(m_CenteringIntake, m_Intake, m_Shooter);
 
 	m_SolenoidLeft = new Solenoid(SOLENOID_LEFT);
@@ -54,6 +54,7 @@ CowRobot::CowRobot()
 void CowRobot::Reset()
 {
 	m_Arm->ResetConstants();
+	m_Shooter->ResetConstants();
 	m_DriveEncoder->Reset();
 	//m_Gyro->Reset();
 
@@ -118,12 +119,12 @@ void CowRobot::handle()
 		//1 unused
 
 		//std::cout << "Gyro: " <<  m_Gyro->GetAngle() << std::endl;
-		std::cout << std::dec
-				  << m_DriveEncoder->Get() << " "
-				  << m_QEI2->Get() << " "
-				  << m_QEI3->Get() << " "
-				  << m_QEI4->Get() << " "
-				  << m_QEI5->Get() << std::endl << std::endl;
+//		std::cout << std::dec
+//				  << m_DriveEncoder->Get() << " "
+//				  << m_QEI2->Get() << " "
+//				  << m_QEI3->Get() << " "
+//				  << m_QEI4->Get() << " "
+//				  << m_QEI5->Get() << std::endl << std::endl;
 	}
 
 	m_DSUpdateCount++;

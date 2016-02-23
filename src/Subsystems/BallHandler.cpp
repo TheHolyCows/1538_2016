@@ -13,6 +13,7 @@ BallHandler::BallHandler(CenteringIntake *centeringIntake, Intake *intake, Shoot
 	m_Intake(intake),
 	m_Shooter(shooter),
 	m_State(NO_BALL_AND_WAIT),
+	m_ShooterState(MANUAL_CONTROL),
 	m_StartTimeShooter(0),
 	m_StartTimeIntake(0)
 {
@@ -21,6 +22,10 @@ BallHandler::BallHandler(CenteringIntake *centeringIntake, Intake *intake, Shoot
 
 void BallHandler::SetState(e_BallHandleState state)
 {
+	if(state == SHOOT && m_ShooterState != SPOOL_PID_CONTROL)
+	{
+		return;
+	}
    m_State = state;
 
    if((m_State == SHOOT) || (m_State == STAGE))
@@ -33,12 +38,18 @@ void BallHandler::SetState(e_BallHandleState state)
    }
 }
 
+void BallHandler::SetShooterState(e_ShooterState state)
+{
+	m_ShooterState = state;
+}
+
 void BallHandler::Handle()
 {
 	switch(m_State)
    {
 	  case NO_BALL_AND_WAIT:
 	  {
+		 SetShooterState(MANUAL_CONTROL);
 		 m_Shooter->SetManualSpeed(0);
 		 m_Intake->SetManualSpeed(0);
 		 m_CenteringIntake->SetManualSpeed(0);
@@ -54,10 +65,10 @@ void BallHandler::Handle()
 
 		  // check current so it could move to STAGE state
 		  // call SetState(STAGE)
-		  double current = m_Intake->GetCurrent();
+		  double watts = fabs(m_Intake->GetWatts());
 		  double elapsedTime = Timer::GetFPGATimestamp() - m_StartTimeIntake;
-		  std::cout << "Current: " << current << std::endl;
-		  if(current >= CONSTANT("INTAKE_CURRENT") && elapsedTime > 0.5)
+		  std::cout << "Watts: " << watts << std::endl;
+		  if(watts >= CONSTANT("INTAKE_WATTS") && elapsedTime > CONSTANT("INTAKE_STABLIZING_TIME"))
 		  {
 			  SetState(INTAKE_MOAR);
 			  m_StartTimeIntake = Timer::GetFPGATimestamp();
@@ -66,6 +77,8 @@ void BallHandler::Handle()
 	  }
 	  case INTAKE_MOAR:
 	  {
+		  m_CenteringIntake->SetManualSpeed(0);
+
 		  double elapsedTime = Timer::GetFPGATimestamp() - m_StartTimeIntake;
 		  if(elapsedTime > CONSTANT("INTAKE_MOAR_TIME"))
 		  {
@@ -75,6 +88,7 @@ void BallHandler::Handle()
 	  }
 	  case STAGE:
 	  {
+		  //SetShooterState(MANUAL_CONTROL);
 		  m_Shooter->SetManualSpeed(-0.5);
 		  m_Intake->SetManualSpeed(-1);
 		  m_CenteringIntake->SetManualSpeed(1);
@@ -90,29 +104,24 @@ void BallHandler::Handle()
 	  }
 	  case BALL_AND_WAIT:
 	  {
+		 //SetShooterState(MANUAL_CONTROL);
 		 m_Shooter->SetManualSpeed(0);
 		 m_Intake->SetManualSpeed(0);
 		 m_CenteringIntake->SetManualSpeed(0);
 
 		 break;
 	  }
-	  case SPOOL_SHOOTER:
-	  {
-		  // start shooter
-		  m_Shooter->SetManualSpeed(1);
-		  break;
-	  }
 	  case SHOOT:
 	  {
 		  // run all ie make ball go out
 		 m_Intake->SetManualSpeed(1);
-		 m_CenteringIntake->SetManualSpeed(1);
+		 m_CenteringIntake->SetManualSpeed(0.2);
 
 		 double elapsedTime = Timer::GetFPGATimestamp() - m_StartTimeShooter;
 
-		 if(elapsedTime >= 0.25)
+		 if(elapsedTime >= CONSTANT("AFTER_SHOOT_TIME") && m_Shooter->HasShotBall())
 		 {
-		//	 m_State = NO_BALL_AND_WAIT;
+			 m_State = NO_BALL_AND_WAIT;
 		 }
 
 		 break;
@@ -123,6 +132,29 @@ void BallHandler::Handle()
 		 break;
 	  }
    }
+
+	switch(m_ShooterState)
+   {
+	  case MANUAL_CONTROL:
+	  {
+		 m_Shooter->SetPIDState(false);
+
+		 break;
+	  }
+	  case SPOOL_PID_CONTROL:
+	  {
+		  m_Shooter->SetPIDState(true);
+		  // start shooter
+		  m_Shooter->SetAutoSpeed(CONSTANT("SHOOTER_RPM"));
+		  break;
+	  }
+	  default:
+	  {
+		 // SHOULD NEVER GO IN HERE
+		 break;
+	  }
+   }
+
 }
 
 e_BallHandleState BallHandler::GetState()

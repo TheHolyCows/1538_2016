@@ -73,14 +73,13 @@ void OperatorController::handle(CowRobot *bot)
 	}
 
 	// Turn on Shooter
-	if(m_SpoolShooterLatch->Latch((bot->GetBallHandler()->GetState() >= BALL_AND_WAIT) && (m_CB->GetOperatorButton(10))))
+	if(m_SpoolShooterLatch->Latch(m_CB->GetOperatorButton(10)))
 	{
 		//bot->GetShooter()->SetManualSpeed(1);
-		bot->GetBallHandler()->SetState(SPOOL_SHOOTER);
+		bot->GetBallHandler()->SetShooterState(SPOOL_PID_CONTROL);
 	}
-	else if(!m_CB->GetOperatorButton(10) && bot->GetBallHandler()->GetState() == SHOOT)
+	else if(!m_CB->GetOperatorButton(10))
 	{
-		bot->GetBallHandler()->SetState(NO_BALL_AND_WAIT);
 		m_SpoolShooterLatch->ResetLatch();
 	}
 

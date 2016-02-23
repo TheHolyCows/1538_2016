@@ -23,7 +23,7 @@ public:
 	void SetManualSpeed(float speed);
 	void AutoIntakeAndDrop();
 	bool IsInAutoMode();
-	double GetCurrent();
+	double GetWatts();
 	void Handle();
 	virtual ~Intake();
 };
