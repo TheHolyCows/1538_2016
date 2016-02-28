@@ -23,6 +23,19 @@ void CenteringIntake::SetManualSpeed(float speed)
 	m_Speed = speed;
 }
 
+double CenteringIntake::GetWattsLeft()
+{
+	float amps = fabs(m_LeftMotor->GetOutputCurrent());
+	float volts = fabs(m_LeftMotor->GetOutputVoltage());
+	return fabs(amps * volts);
+}
+double CenteringIntake::GetWattsRight()
+{
+	float amps = fabs(m_RightMotor->GetOutputCurrent());
+	float volts = fabs(m_RightMotor->GetOutputVoltage());
+	return fabs(amps * volts);
+}
+
 void CenteringIntake::Handle()
 {
 	if(m_LeftMotor && m_RightMotor)

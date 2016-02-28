@@ -17,9 +17,11 @@ typedef enum
    NONE = 0,
    NO_BALL_AND_WAIT,
    INTAKE,
+   STALL_REVERSE,
    INTAKE_MOAR,
    STAGE,
    BALL_AND_WAIT,
+   SHOOT_STAGE,
    SHOOT
 
 } e_BallHandleState;

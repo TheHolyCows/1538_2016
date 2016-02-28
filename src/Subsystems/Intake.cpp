@@ -49,7 +49,7 @@ double Intake::GetWatts()
 					m_MotorB->GetOutputCurrent())/2.0;
 	float volts = (m_MotorA->GetOutputVoltage() +
 					m_MotorB->GetOutputVoltage()) / 2.0;
-	return (amps * volts);
+	return fabs(amps * volts);
 }
 
 Intake::~Intake() {

@@ -65,7 +65,7 @@ void OperatorController::handle(CowRobot *bot)
 	{
 		std::cout << "Setting state on shoot button " << std::endl;
 
-		bot->GetBallHandler()->SetState(SHOOT);
+		bot->GetBallHandler()->SetState(SHOOT_STAGE);
 	}
 	else if(!m_CB->GetOperatorButton(9))
 	{

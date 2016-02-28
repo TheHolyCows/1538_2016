@@ -21,12 +21,17 @@ private:
 	Encoder *m_EncoderB;
 	bool m_PIDEnabled;
 	float m_Speed;
+	double m_EncoderASpeed;
+	double m_EncoderBSpeed;
 	Shooter();
 public:
 	Shooter(uint8_t motorA, uint8_t motorB, Encoder* encoderA, Encoder* encoderB);
 	void SetManualSpeed(float speed);
-	void SetAutoSpeed(float speed);
+	void SetAutoSpeed(float speedA, float speedB);
 	void SetPIDState(bool state);
+	double GetMotorASpeed();
+	double GetMotorBSpeed();
+	bool IsOnTarget();
 	bool HasShotBall();
 	void ResetConstants();
 	void Handle();

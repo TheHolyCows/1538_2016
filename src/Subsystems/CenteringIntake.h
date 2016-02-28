@@ -20,6 +20,8 @@ public:
 	CenteringIntake(uint8_t leftMotor, uint8_t rightMotor);
 	void SetManualSpeed(float speed);
 	void Handle();
+	double GetWattsLeft();
+	double GetWattsRight();
 	virtual ~CenteringIntake();
 };
 

@@ -45,7 +45,13 @@ void Arm::Handle()
 {
 	if(m_MotorA && m_MotorB)
 	{
+
+		std::cout << std::dec << "Arm Position: " << m_Encoder->Get() << std::endl;
 		m_Speed = m_PID->Calculate(m_Encoder->Get());
+		if(m_Speed > 0)
+		{
+			m_Speed *= 0.5f;
+		}
 		m_MotorA->Set(m_Speed);
 		m_MotorB->Set(m_Speed);
 	}
