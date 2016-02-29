@@ -72,6 +72,12 @@ void OperatorController::handle(CowRobot *bot)
 		m_ShootLatch->ResetLatch();
 	}
 
+	if(m_CB->GetOperatorButton(3))
+	{
+		//bot->GetShooter()->SetManualSpeed(1);
+		bot->GetBallHandler()->SetState(EXHAUST);
+	}
+
 	// Turn on Shooter
 	if(m_SpoolShooterLatch->Latch(m_CB->GetOperatorButton(10)))
 	{

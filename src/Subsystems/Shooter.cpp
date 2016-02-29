@@ -57,14 +57,21 @@ bool Shooter::IsOnTarget()
 
 bool Shooter::HasShotBall()
 {
-	if(m_PID_B->GetSetpoint() > 0)
+	bool hasShot = false;
+	if(m_PIDEnabled &&
+			m_PID_B->GetSetpoint() != 0 &&
+			m_PID_A->GetSetpoint() != 0 )
 	{
-		if(fabs(m_PID_B->GetError()) > 500 && m_PIDEnabled)
+		if(fabs(m_PID_B->GetError()) > 500)
 		{
-			return true;
+			hasShot = true;
+		}
+		if(fabs(m_PID_A->GetError()) > 500)
+		{
+			hasShot = true;
 		}
 	}
-	return false;
+	return hasShot;
 
 }
 

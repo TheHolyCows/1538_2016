@@ -15,7 +15,8 @@ BallHandler::BallHandler(CenteringIntake *centeringIntake, Intake *intake, Shoot
 	m_State(NO_BALL_AND_WAIT),
 	m_ShooterState(MANUAL_CONTROL),
 	m_StartTimeShooter(0),
-	m_StartTimeIntake(0)
+	m_StartTimeIntake(0),
+	m_StartTimeExhaust(0)
 {
 
 }
@@ -35,6 +36,10 @@ void BallHandler::SetState(e_BallHandleState state)
    if((m_State == INTAKE))
    {
 	   m_StartTimeIntake = Timer::GetFPGATimestamp();
+   }
+   if((m_State == EXHAUST))
+   {
+	   m_StartTimeExhaust = Timer::GetFPGATimestamp();
    }
 }
 
@@ -85,6 +90,21 @@ void BallHandler::Handle()
 		  {
 			  SetState(STALL_REVERSE);
 			  m_StartTimeIntake = Timer::GetFPGATimestamp();
+		  }
+		 break;
+	  }
+	  case EXHAUST:
+	  {
+		  std::cout << "Currently in exhaust" << std::endl;
+		  // run intake and centering intake
+		  m_Intake->SetManualSpeed(-1);
+		  m_CenteringIntake->SetManualSpeed(-1);
+		  m_Shooter->SetManualSpeed(-1);
+		  double elapsedTime = Timer::GetFPGATimestamp() - m_StartTimeExhaust;
+
+		  if(elapsedTime > CONSTANT("EXHAUST_TIME"))
+		  {
+			  SetState(BALL_AND_WAIT);
 		  }
 		 break;
 	  }
@@ -152,7 +172,13 @@ void BallHandler::Handle()
 
 		 double elapsedTime = Timer::GetFPGATimestamp() - m_StartTimeShooter;
 
-		 if(elapsedTime >= CONSTANT("AFTER_SHOOT_TIME") && m_Shooter->HasShotBall())
+
+
+//		 if(elapsedTime >= CONSTANT("AFTER_SHOOT_TIME") && m_Shooter->HasShotBall())
+//		 {
+//			 m_State = NO_BALL_AND_WAIT;
+//		 }
+		 if(elapsedTime >= CONSTANT("AFTER_SHOOT_TIME"))
 		 {
 			 m_State = NO_BALL_AND_WAIT;
 		 }
