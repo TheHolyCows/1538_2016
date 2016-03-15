@@ -33,6 +33,7 @@ public:
 	void SetOutputRange(double min, double max);
 
 	void UpdateConstants(double Kp, double Ki, double Kd, double Kf);
+	void UpdatePConstant(double Kp);
 
 private:
 	CowPID();

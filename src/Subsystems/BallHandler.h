@@ -46,11 +46,11 @@ public:
    void SetShooterState(e_ShooterState state);
 
 private:
-   e_BallHandleState m_State;
-   e_ShooterState m_ShooterState;
    CenteringIntake* m_CenteringIntake;
    Intake* m_Intake;
    Shooter* m_Shooter;
+   e_BallHandleState m_State;
+   e_ShooterState m_ShooterState;
    double m_StartTimeShooter;
    double m_StartTimeIntake;
    double m_StartTimeExhaust;

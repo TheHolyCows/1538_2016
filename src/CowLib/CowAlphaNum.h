@@ -37,12 +37,12 @@ namespace CowLib
 		void OscillatorOn();
 
 	private:
-		uint32_t m_BannerLength;
-		uint32_t m_BannerPosition;
-		uint8_t m_DisplayBuffer[HT16K33_CMD_BUFFER_SIZE];
 		uint8_t m_Address;
 		I2C *m_I2C;
 		uint16_t *m_Banner;
+		uint32_t m_BannerLength;
+		uint32_t m_BannerPosition;
+		uint8_t m_DisplayBuffer[HT16K33_CMD_BUFFER_SIZE];
 	};
 }
 

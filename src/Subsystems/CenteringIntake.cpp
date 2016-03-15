@@ -45,6 +45,11 @@ void CenteringIntake::Handle()
 	}
 }
 
+void CenteringIntake::Reset()
+{
+	m_Speed = 0;
+}
+
 CenteringIntake::~CenteringIntake() {
 	// TODO Auto-generated destructor stub
 }

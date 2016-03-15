@@ -14,7 +14,8 @@ CowTrapezoidalM::CowTrapezoidalM(double accelSlope, double decelSlope)
 		m_AccelSlope(0),
 		m_DecelSlope(0),
 		m_StartingPosition(0),
-		m_Setpoint(0)
+		m_Setpoint(0),
+		m_AccelerationPhase(0)
 {
 	// TODO Auto-generated constructor stub
 
@@ -54,6 +55,8 @@ double CowTrapezoidalM::Calculate(double currentPosition)
 			return speed;
 		}
 	}
+
+	return 0;
 }
 
 CowTrapezoidalM::~CowTrapezoidalM() {

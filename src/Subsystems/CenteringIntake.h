@@ -22,6 +22,7 @@ public:
 	void Handle();
 	double GetWattsLeft();
 	double GetWattsRight();
+	void Reset();
 	virtual ~CenteringIntake();
 };
 

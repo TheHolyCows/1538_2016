@@ -75,7 +75,7 @@ void AutoModeController::handle(CowRobot *bot)
 		{			
 			m_CurrentCommand = m_CommandList.front();
 			m_CommandList.pop_front();
-			bot->GetEncoder()->Reset();
+			//bot->GetEncoder()->Reset();
 			
 			if(!m_CurrentCommand.m_Command == CMD_NULL)
 			{

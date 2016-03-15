@@ -17,8 +17,8 @@ private:
 
 	uint8_t m_UserState;
 	uint8_t m_PrevUserState;
-	uint32_t m_UserPeriodicCount;
 	uint32_t m_UserStatePeriodicCount;
+	uint32_t m_UserPeriodicCount;
 	uint8_t m_UserScrollCount;
 	bool m_ButtonPressedOnce;
 	CowRobot *m_Bot;

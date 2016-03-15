@@ -52,6 +52,11 @@ double Intake::GetWatts()
 	return fabs(amps * volts);
 }
 
+void Intake::Reset()
+{
+	m_Speed = 0;
+}
+
 Intake::~Intake() {
 	// TODO Auto-generated destructor stub
 }

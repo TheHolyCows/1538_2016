@@ -35,6 +35,8 @@ void CowBase::DisabledInit()
 {
 	CowConstants::GetInstance()->RestoreData();
 	m_Bot->GetGyro()->BeginCalibration();
+	m_Bot->Reset();
+
 }
 
 void CowBase::AutonomousInit()

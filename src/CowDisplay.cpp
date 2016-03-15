@@ -65,7 +65,11 @@ void CowDisplay::DisplayUpdateState()
 		{
 			if (m_UserStatePeriodicCount == 50)
 			{
-				alphaNumLED->SetBanner("?   ");
+				char volt[64];
+				sprintf(volt, "%.2f ", m_Bot->GetGyro()->GetAngle());
+				std::string msg(volt);
+				msg = msg + " ";
+				alphaNumLED->SetBanner(msg);
 			}
 		}
 		alphaNumLED->SetBannerPosition(m_UserScrollCount);

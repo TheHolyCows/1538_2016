@@ -153,7 +153,7 @@ double CowGyro::GetRate()
 bool CowGyro::InitializeGyro()
 {
 	// Start a self-check
-	int32_t result = DoTransaction(SENSOR_DATA_CMD | CHK_GENERATE_FAULTS_BIT);
+	DoTransaction(SENSOR_DATA_CMD | CHK_GENERATE_FAULTS_BIT);
 //	if(result != 1)
 //	{
 //		std::cerr << "Unexpected self check response " << std::hex << result << std::endl;
@@ -191,16 +191,6 @@ bool CowGyro::InitializeGyro()
 		std::cerr << "Gyro second self test read failed: 0x" << std::hex << selfCheckResult << std::endl;
 		return false;
 	}
-
-//	// Clear the latched self-test data
-//	selfCheckResult = DoTransaction(SENSOR_DATA_CMD);
-//	if(ExtractStatus(selfCheckResult) != SELF_TEST_DATA)
-//	{
-//		std::cerr << "Gyro third self test read failed: 0x" << std::hex << selfCheckResult << std::endl;
-//		return false;
-//	}
-
-
 
 	return true;
 }

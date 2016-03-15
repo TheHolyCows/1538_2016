@@ -16,9 +16,16 @@ OperatorController::OperatorController(CowControlBoard *controlboard)
 void OperatorController::handle(CowRobot *bot)
 {
 	//printf("Controlling...\n");
-	bot->DriveSpeedTurn(m_CB->GetDriveStickY(),
-						m_CB->GetSteeringX(),
-						m_CB->GetSteeringButton(FAST_TURN));
+	if(m_CB->GetDriveButton(1))
+	{
+		bot->DriveDistanceWithHeading(0, 12);
+	}
+	else
+	{
+		bot->DriveSpeedTurn(m_CB->GetDriveStickY(),
+							m_CB->GetSteeringX(),
+							m_CB->GetSteeringButton(FAST_TURN));
+	}
 	float armJoystick = CowLib::Deadband(m_CB->GetOperatorGamepadAxis(1), 0.2) * 4;
 
 	bot->GetArm()->SetPosition(bot->GetArm()->GetSetpoint() +
@@ -52,7 +59,7 @@ void OperatorController::handle(CowRobot *bot)
 	// Intake
 	if(m_IntakeLatch->Latch(m_CB->GetOperatorButton(5)))
 	{
-		std::cout << "Setting state on intake button " << std::endl;
+		std::cout << "Setting state to INTAKE" << std::endl;
 
 		bot->GetBallHandler()->SetState(INTAKE);
 	}
@@ -63,7 +70,7 @@ void OperatorController::handle(CowRobot *bot)
 
 	if(m_ShootLatch->Latch(m_CB->GetOperatorButton(9)))
 	{
-		std::cout << "Setting state on shoot button " << std::endl;
+		std::cout << "Setting state to SHOOT_STAGE" << std::endl;
 
 		bot->GetBallHandler()->SetState(SHOOT_STAGE);
 	}
@@ -75,13 +82,14 @@ void OperatorController::handle(CowRobot *bot)
 	if(m_CB->GetOperatorButton(3))
 	{
 		//bot->GetShooter()->SetManualSpeed(1);
+		std::cout << "Setting state to EXHAUST" << std::endl;
 		bot->GetBallHandler()->SetState(EXHAUST);
 	}
 
 	// Turn on Shooter
 	if(m_SpoolShooterLatch->Latch(m_CB->GetOperatorButton(10)))
 	{
-		//bot->GetShooter()->SetManualSpeed(1);
+		std::cout << "Setting state to SPOOL_PID_CONTROL" << std::endl;
 		bot->GetBallHandler()->SetShooterState(SPOOL_PID_CONTROL);
 	}
 	else if(!m_CB->GetOperatorButton(10))

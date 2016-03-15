@@ -119,6 +119,14 @@ void Shooter::Handle()
 	}
 }
 
+void Shooter::Reset()
+{
+	m_PIDEnabled = false;
+	m_Speed = 0;
+	m_EncoderASpeed = 0;
+	m_EncoderBSpeed = 0;
+}
+
 Shooter::~Shooter() {
 	// TODO Auto-generated destructor stub
 }

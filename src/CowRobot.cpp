@@ -19,13 +19,13 @@ CowRobot::CowRobot()
 	m_RightDriveB = new CANTalon(DRIVE_RIGHT_B);
 	m_RightDriveC = new CANTalon(DRIVE_RIGHT_C);
 
-	m_DriveEncoder = new Encoder(MXP_QEI_1_A, MXP_QEI_1_B, true, Encoder::k1X);
-	m_DriveEncoder->SetDistancePerPulse(0.03490658503); // 4*pi/360
+	m_DriveEncoder = new Encoder(MXP_QEI_5_A, MXP_QEI_5_B, false, Encoder::k1X);
+	m_DriveEncoder->SetDistancePerPulse(0.05235983333333); // 6*pi/360
 
-	m_QEI2 = new Encoder(MXP_QEI_2_A, MXP_QEI_2_B, true, Encoder::k1X);
+	m_QEI2 = new Encoder(MXP_QEI_2_A, MXP_QEI_2_B, true, Encoder::k4X);
 	m_QEI3 = new Encoder(MXP_QEI_3_A, MXP_QEI_3_B, true, Encoder::k1X);
 	m_QEI4 = new Encoder(MXP_QEI_4_A, MXP_QEI_4_B, true, Encoder::k1X);
-	m_QEI5 = new Encoder(MXP_QEI_5_A, MXP_QEI_5_B, true, Encoder::k1X);
+	//m_QEI5 = new Encoder(MXP_QEI_5_A, MXP_QEI_5_B, true, Encoder::k1X);
 
 	m_Arm = new Arm(ARM_A, ARM_B, m_QEI2);
 	m_CenteringIntake = new CenteringIntake(LEFT_CENTER, RIGHT_CENTER);
@@ -55,11 +55,19 @@ void CowRobot::Reset()
 {
 	m_Arm->ResetConstants();
 	m_Shooter->ResetConstants();
+
+	m_Arm->Reset();
+	m_CenteringIntake->Reset();
+	m_Intake->Reset();
+	m_Shooter->Reset();
+
 	m_DriveEncoder->Reset();
-	//m_Gyro->Reset();
 
 	m_PreviousGyroError = 0;
 	m_PreviousDriveError = 0;
+
+	m_LeftDriveValue = 0;
+	m_RightDriveValue = 0;
 }
 
 void CowRobot::SetController(GenericController *controller)
@@ -110,22 +118,19 @@ void CowRobot::handle()
 	
 	SetLeftMotors(tmpLeftMotor);
 	SetRightMotors(tmpRightMotor);
-	if(m_DSUpdateCount % 10 == 0)
-	{
-		//5 is drive
-		//4 s1
-		//3 s2
-		//2 arm
-		//1 unused
-
-		//std::cout << "Gyro: " <<  m_Gyro->GetAngle() << std::endl;
+//	if(m_DSUpdateCount % 10 == 0)
+//	{
+//		//5 is drive
+//		//4 s1
+//		//3 s2
+//		//2 arm
+//		//1 unused
+//
+//		//std::cout << "Gyro: " <<  m_Gyro->GetAngle() << std::endl;
 //		std::cout << std::dec
 //				  << m_DriveEncoder->Get() << " "
-//				  << m_QEI2->Get() << " "
-//				  << m_QEI3->Get() << " "
-//				  << m_QEI4->Get() << " "
-//				  << m_QEI5->Get() << std::endl << std::endl;
-	}
+//				  << m_Gyro->GetAngle() << std::endl;
+//	}
 
 	m_DSUpdateCount++;
 
@@ -251,17 +256,6 @@ void CowRobot::QuickTurn(float turnRate)
 	DriveLeftRight(left, right);
 }
 
-/// Returns the value of the drive's left side encoder
-//Encoder * CowRobot::GetEncoder()
-//{
-//	return m_Encoder;
-//}
-//
-//Gyro * CowRobot::GetGyro()
-//{
-//	return m_Gyro;
-//}
-
 // sets the left side motors
 void CowRobot::SetLeftMotors(float val)
 {
@@ -288,13 +282,3 @@ void CowRobot::SetRightMotors(float val)
 	m_RightDriveB->Set(-val);
 	m_RightDriveC->Set(-val);
 }
-
-//void CowRobot::GyroHandleCalibration()
-//{
-//	m_Gyro->HandleCalibration();
-//}
-//
-//void CowRobot::GyroFinalizeCalibration()
-//{
-//	m_Gyro->FinalizeCalibration();
-//}

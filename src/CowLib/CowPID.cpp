@@ -149,4 +149,9 @@ void CowPID::UpdateConstants(double Kp, double Ki, double Kd, double Kf)
 	ResetIntegrator();
 }
 
+void CowPID::UpdatePConstant(double Kp)
+{
+	m_P = Kp;
+}
+
 } /* namespace CowLib */

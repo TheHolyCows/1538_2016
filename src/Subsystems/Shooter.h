@@ -15,12 +15,15 @@ class Shooter {
 private:
 	CANTalon* m_MotorA;
 	CANTalon* m_MotorB;
-	CowLib::CowPID* m_PID_A;
-	CowLib::CowPID* m_PID_B;
+	float m_Speed;
+
 	Encoder *m_EncoderA;
 	Encoder *m_EncoderB;
+
+	CowLib::CowPID* m_PID_A;
+	CowLib::CowPID* m_PID_B;
+
 	bool m_PIDEnabled;
-	float m_Speed;
 	double m_EncoderASpeed;
 	double m_EncoderBSpeed;
 	Shooter();
@@ -34,6 +37,7 @@ public:
 	bool IsOnTarget();
 	bool HasShotBall();
 	void ResetConstants();
+	void Reset();
 	void Handle();
 	virtual ~Shooter();
 };

@@ -25,6 +25,7 @@ public:
 	bool IsInAutoMode();
 	double GetWatts();
 	void Handle();
+	void Reset();
 	virtual ~Intake();
 };
 

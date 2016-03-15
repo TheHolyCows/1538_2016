@@ -43,7 +43,6 @@ private:
 	Encoder *m_QEI2;
 	Encoder *m_QEI3;
 	Encoder *m_QEI4;
-	Encoder *m_QEI5;
 
 	Arm *m_Arm;
 	CenteringIntake *m_CenteringIntake;

@@ -27,20 +27,20 @@ void BallHandler::SetState(e_BallHandleState state)
 	{
 		return;
 	}
-   m_State = state;
+	m_State = state;
 
-   if((m_State == SHOOT) || (m_State == STAGE))
-   {
+	if((m_State == SHOOT) || (m_State == STAGE))
+	{
 	   m_StartTimeShooter = Timer::GetFPGATimestamp();
-   }
-   if((m_State == INTAKE))
-   {
+	}
+	if((m_State == INTAKE))
+	{
 	   m_StartTimeIntake = Timer::GetFPGATimestamp();
-   }
-   if((m_State == EXHAUST))
-   {
+	}
+	if((m_State == EXHAUST))
+	{
 	   m_StartTimeExhaust = Timer::GetFPGATimestamp();
-   }
+	}
 }
 
 void BallHandler::SetShooterState(e_ShooterState state)
@@ -50,7 +50,7 @@ void BallHandler::SetShooterState(e_ShooterState state)
 
 void BallHandler::Handle()
 {
-	switch(m_State)
+   switch(m_State)
    {
 	  case NO_BALL_AND_WAIT:
 	  {
@@ -71,13 +71,13 @@ void BallHandler::Handle()
 		  double wattsCenteringIntakeRight = m_CenteringIntake->GetWattsRight();
 
 
-		  std::cout << "Centering L: " << wattsCenteringIntakeLeft << " R: " << wattsCenteringIntakeRight << std::endl;
-		  std::cout << "S1: " << m_Shooter->GetMotorASpeed() << " S2: " << m_Shooter->GetMotorBSpeed() << std::endl;
+		  //std::cout << "Centering L: " << wattsCenteringIntakeLeft << " R: " << wattsCenteringIntakeRight << std::endl;
+		  //std::cout << "S1: " << m_Shooter->GetMotorASpeed() << " S2: " << m_Shooter->GetMotorBSpeed() << std::endl;
 		  // check current so it could move to STAGE state
 		  // call SetState(STAGE)
-		  double watts = fabs(m_Intake->GetWatts());
+		  //double watts = fabs(m_Intake->GetWatts());
 		  double elapsedTime = Timer::GetFPGATimestamp() - m_StartTimeIntake;
-		  std::cout << "Watts: " << watts << std::endl;
+		  //std::cout << "Watts: " << watts << std::endl;
 		  if((fabs(m_Shooter->GetMotorASpeed()) > CONSTANT("INTAKE_SHOOTER_DETECT_RPM") ||
 				  fabs(m_Shooter->GetMotorBSpeed()) > CONSTANT("INTAKE_SHOOTER_DETECT_RPM") )
 				  && fabs(m_Shooter->GetMotorBSpeed()) > CONSTANT("INTAKE_SHOOTER_DETECT_RPM") && elapsedTime > CONSTANT("INTAKE_STABLIZING_TIME"))
@@ -173,11 +173,6 @@ void BallHandler::Handle()
 		 double elapsedTime = Timer::GetFPGATimestamp() - m_StartTimeShooter;
 
 
-
-//		 if(elapsedTime >= CONSTANT("AFTER_SHOOT_TIME") && m_Shooter->HasShotBall())
-//		 {
-//			 m_State = NO_BALL_AND_WAIT;
-//		 }
 		 if(elapsedTime >= CONSTANT("AFTER_SHOOT_TIME"))
 		 {
 			 m_State = NO_BALL_AND_WAIT;
