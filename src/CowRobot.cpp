@@ -42,7 +42,7 @@ CowRobot::CowRobot()
 	m_Gyro = CowLib::CowGyro::GetInstance();
 	//m_Gyro->Reset();
 	m_PowerDistributionPanel = new PowerDistributionPanel();
-	m_WebServer = new CowLib::CowWebDebugger();
+	m_WebServer = new CowLib::CowLogger();
 
 	m_LeftDriveValue = 0;
 	m_RightDriveValue = 0;

@@ -6,8 +6,8 @@
  */
 
 #include <CowGyro.h>
+#include <CowLib/CowLogger.h>
 #include <cmath>
-#include <CowLib/CowWebDebugger.h>
 
 namespace CowLib
 {
@@ -362,9 +362,9 @@ void CowGyro::FinalizeCalibration()
 		m_ZeroRatesSamples[i] = 0;
 	}
 
-	std::cout << "attempting to log warning" << std::endl;
-	CowWebDebugger::GetInstance()->LogWarning("Zero Bias", m_ZeroBias);
-	std::cout << "finished to log warning" << std::endl;
+	std::cout << "attempting to log gyro" << std::endl;
+	CowLogger::GetInstance()->Log("Gyro: Zero Bias", m_ZeroBias);
+	std::cout << "finished to log gyro" << std::endl;
 	m_LastTime = Timer::GetFPGATimestamp();
 
 	//std::cout << "Finalized gyro, angle: " << m_Angle << " bias: " << m_ZeroBias << std::endl;

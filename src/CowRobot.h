@@ -5,6 +5,7 @@
 #ifndef __COW_ROBOT_H__
 #define __COW_ROBOT_H__
 
+#include <CowLib/CowLogger.h>
 #include <WPILib.h>
 #include "Controllers/GenericController.h"
 #include "CowLib/CowLib.h"
@@ -12,7 +13,6 @@
 #include "CounterBase.h"
 #include "CowConstants.h"
 #include "CowLib/CowAlphaNum.h"
-#include "CowLib/CowWebDebugger.h"
 #include "CowGyro.h"
 #include "Subsystems/Arm.h"
 #include "Subsystems/BallHandler.h"
@@ -57,7 +57,7 @@ private:
 	PowerDistributionPanel *m_PowerDistributionPanel;
 
 	CowLib::CowAlphaNum *m_LEDDisplay;
-	CowLib::CowWebDebugger *m_WebServer;
+	CowLib::CowLogger *m_WebServer;
 
 	float m_LeftDriveValue;
 	float m_RightDriveValue;

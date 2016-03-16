@@ -4,24 +4,24 @@
  *  Created on: Jan 21, 2016
  *      Author: kchau
  */
+#include <CowLib/CowLogger.h>
 #include <iostream>
-#include "CowWebDebugger.h"
 #include <time.h>
 #include <WPILib.h>
 
 namespace CowLib
 {
 
-CowWebDebugger* CowWebDebugger::m_Instance = 0;
+CowLogger* CowLogger::m_Instance = 0;
 
-std::mutex CowWebDebugger::m_Mutex;
-std::ofstream CowWebDebugger::m_OutputFile;
-std::queue<std::pair<std::string, double>> CowWebDebugger::m_BufferQueue;
+std::mutex CowLogger::m_Mutex;
+std::ofstream CowLogger::m_OutputFile;
+std::queue<std::pair<std::string, double>> CowLogger::m_BufferQueue;
 
-CowWebDebugger::CowWebDebugger()
+CowLogger::CowLogger()
 {
 	// TODO Auto-generated constructor stub
-	m_Thread = new std::thread(CowWebDebugger::Handle);
+	m_Thread = new std::thread(CowLogger::Handle);
 	time_t rawTime;
 	struct tm *timeInfo;
 	time(&rawTime);
@@ -32,7 +32,7 @@ CowWebDebugger::CowWebDebugger()
 	std::cout << "Opened file for debugging" << std::endl;
 }
 
-CowWebDebugger::~CowWebDebugger()
+CowLogger::~CowLogger()
 {
 	// TODO Auto-generated destructor stub
 	m_OutputFile.close();
@@ -41,17 +41,17 @@ CowWebDebugger::~CowWebDebugger()
 
 }
 
-CowWebDebugger* CowWebDebugger::GetInstance()
+CowLogger* CowLogger::GetInstance()
 {
 	if(m_Instance == 0)
 	{
-		m_Instance = new CowWebDebugger();
+		m_Instance = new CowLogger();
 	}
 
 	return m_Instance;
 }
 
-void CowWebDebugger::Handle()
+void CowLogger::Handle()
 {
 	while(true)
 	{
@@ -75,7 +75,7 @@ void CowWebDebugger::Handle()
 	}
 }
 
-void CowWebDebugger::LogWarning(std::string key, double value)
+void CowLogger::Log(std::string key, double value)
 {
 	m_Mutex.lock();
 	m_BufferQueue.push(std::pair<std::string, double>(key, value));
