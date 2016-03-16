@@ -105,6 +105,7 @@ void BallHandler::Handle()
 		  if(elapsedTime > CONSTANT("EXHAUST_TIME"))
 		  {
 			  SetState(BALL_AND_WAIT);
+			  m_StartTimeExhaust = 0;
 		  }
 		 break;
 	  }
@@ -116,6 +117,7 @@ void BallHandler::Handle()
 		  if(elapsedTime > CONSTANT("INTAKE_MOAR_TIME"))
 		  {
 			  SetState(STAGE);
+			  m_StartTimeIntake = 0;
 		  }
 		  break;
 	  }
@@ -128,6 +130,7 @@ void BallHandler::Handle()
 		  if(elapsedTime > CONSTANT("INTAKE_STALL_REVERSE_TIME"))
 		  {
 			  SetState(INTAKE);
+			  m_StartTimeIntake = 0;
 		  }
 		  break;
 	  }
@@ -143,6 +146,7 @@ void BallHandler::Handle()
 		  if(elapsedTime >= CONSTANT("STAGING_TIME"))
 		  {
 			  m_State = BALL_AND_WAIT;
+			  m_StartTimeShooter = 0;
 		  }
 
 		 break;

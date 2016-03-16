@@ -15,6 +15,9 @@ Arm::Arm(uint8_t motorA, uint8_t motorB, Encoder* encoder)
 	m_MotorB(NULL),
 	m_Encoder(encoder),
 	m_PID(NULL),
+	m_UnlockSolenoid(NULL),
+	m_LockSolenoid(NULL),
+	m_LockedState(false),
 	m_Speed(0),
 	m_Setpoint(0)
 {
@@ -26,6 +29,9 @@ Arm::Arm(uint8_t motorA, uint8_t motorB, Encoder* encoder)
 
 	m_PID = new CowLib::CowPID(CONSTANT("ARM_P"), CONSTANT("ARM_I"), CONSTANT("ARM_D"), 0);
 	m_PID->SetSetpoint(0);
+
+	m_LockSolenoid = new Solenoid(SOLENOID_LOCK);
+	m_UnlockSolenoid = new Solenoid(SOLENOID_UNLOCK);
 }
 
 void Arm::SetManualSpeed(float speed)
@@ -42,6 +48,22 @@ void Arm::SetPosition(float position)
 float Arm::GetSetpoint()
 {
 	return m_Setpoint;
+}
+
+void Arm::SetLockState(bool state)
+{
+	if(state)
+	{
+		m_UnlockSolenoid->Set(false);
+		m_LockSolenoid->Set(true);
+		m_LockedState = true;
+	}
+	else
+	{
+		m_UnlockSolenoid->Set(true);
+		m_LockSolenoid->Set(false);
+		m_LockedState = false;
+	}
 }
 
 void Arm::Handle()

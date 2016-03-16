@@ -17,6 +17,10 @@ private:
 	CANTalon* m_MotorB;
 	Encoder* m_Encoder;
 	CowLib::CowPID* m_PID;
+	Solenoid* m_UnlockSolenoid;
+	Solenoid* m_LockSolenoid;
+
+	bool m_LockedState;
 	float m_Speed;
 	float m_Setpoint;
 	Arm();
@@ -26,6 +30,7 @@ public:
 	void SetManualSpeed(float speed);
 	void SetPosition(float position);
 	float GetSetpoint();
+	void SetLockState(bool state);
 	void Handle();
 	void ResetConstants();
 	void Reset();
