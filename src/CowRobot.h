@@ -65,6 +65,8 @@ private:
 	double m_PreviousGyroError;
 	double m_PreviousDriveError;
 
+	int32_t m_JimmyCounts;
+
 	void SetLeftMotors(float val);
 	void SetRightMotors(float val);
 
@@ -76,6 +78,7 @@ public:
 	void SetController(GenericController *controller);
 	void PrintToDS();
 	double GetDriveDistance();
+	bool DriveDistance(double distance);
 	bool DriveDistanceWithHeading(double heading, double distance);
 	bool DriveWithHeading(double heading, double speed);
 	bool DriveWithHeading(double heading, double speed, double maxSpeed);

@@ -19,7 +19,7 @@ CowRobot::CowRobot()
 	m_RightDriveB = new CANTalon(DRIVE_RIGHT_B);
 	m_RightDriveC = new CANTalon(DRIVE_RIGHT_C);
 
-	m_DriveEncoder = new Encoder(MXP_QEI_5_A, MXP_QEI_5_B, false, Encoder::k1X);
+	m_DriveEncoder = new Encoder(MXP_QEI_5_A, MXP_QEI_5_B, true, Encoder::k1X);
 	m_DriveEncoder->SetDistancePerPulse(0.05235983333333); // 6*pi/360
 
 	m_QEI2 = new Encoder(MXP_QEI_2_A, MXP_QEI_2_B, true, Encoder::k4X);
@@ -49,6 +49,8 @@ CowRobot::CowRobot()
 	
 	m_PreviousGyroError = 0;
 	m_PreviousDriveError = 0;
+
+	m_JimmyCounts = 0;
 }
 
 void CowRobot::Reset()
@@ -65,6 +67,8 @@ void CowRobot::Reset()
 
 	m_PreviousGyroError = 0;
 	m_PreviousDriveError = 0;
+
+	m_JimmyCounts = 0;
 
 	m_LeftDriveValue = 0;
 	m_RightDriveValue = 0;
@@ -116,6 +120,32 @@ void CowRobot::handle()
 	float tmpLeftMotor = m_LeftDriveValue;
 	float tmpRightMotor = m_RightDriveValue;
 	
+	if(m_CowPTO->JimmyMode())
+	{
+		if(m_JimmyCounts % 5 == 0)
+		{
+			m_JimmyCounts = 0;
+
+			tmpLeftMotor = 0.5;
+			tmpRightMotor = 0.5;
+		}
+		else
+		{
+			tmpLeftMotor = -0.5;
+			tmpRightMotor = -0.5;
+		}
+	}
+
+	if(m_CowPTO->HangRequested())
+	{
+		bool statusHang = DriveDistance(CONSTANT("PTO_DRIVE_DISTANCE"));
+
+		if(statusHang)
+		{
+			m_CowPTO->SetState(LOCK);
+		}
+	}
+
 	SetLeftMotors(tmpLeftMotor);
 	SetRightMotors(tmpRightMotor);
 //	if(m_DSUpdateCount % 10 == 0)
@@ -133,12 +163,30 @@ void CowRobot::handle()
 //	}
 
 	m_DSUpdateCount++;
+	m_JimmyCounts++;
 
 }
 
 double CowRobot::GetDriveDistance()
 {
 	return m_DriveEncoder->GetDistance();
+}
+
+bool CowRobot::DriveDistance(double distance)
+{
+	double PID_P = CONSTANT("DRIVE_P");
+	double PID_D = CONSTANT("DRIVE_D");
+	double error = distance - m_DriveEncoder->GetDistance();
+	double dError = error - m_PreviousDriveError;
+	double output = PID_P*error + PID_D*dError;
+
+	double speed = CONSTANT("PTO_DRIVE_SPEED");
+	DriveLeftRight(speed-output, speed+output);
+
+
+	m_PreviousDriveError = error;
+
+	return (fabs(error) < 4 && CowLib::UnitsPerSecond(fabs(dError)) < 1);
 }
 
 bool CowRobot::DriveDistanceWithHeading(double heading, double distance)
@@ -159,7 +207,6 @@ bool CowRobot::DriveDistanceWithHeading(double heading, double distance)
 
 bool CowRobot::DriveWithHeading(double heading, double speed)
 {
-	speed *= -1;
 	double PID_P = CONSTANT("TURN_P");
 	double PID_D = CONSTANT("TURN_D");
 	double error = heading - m_Gyro->GetAngle();

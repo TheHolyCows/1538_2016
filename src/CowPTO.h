@@ -24,6 +24,8 @@ class CowPTO
 public:
 	virtual ~CowPTO();
 	CowPTO(Solenoid *solenoidLeft, Solenoid *solenoidRight);
+	bool JimmyMode();
+	bool HangRequested();
 	void Handle();
 	void SetState(e_PTO_State state);
 private:
@@ -31,6 +33,7 @@ private:
 	Solenoid *m_SolenoidLeft;	//
 	Solenoid *m_SolenoidRight;
 	double m_StartNeutralTime;
+	bool m_JimmyMode;
 };
 
 #endif /* SRC_COWPTO_H_ */

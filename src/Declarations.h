@@ -57,5 +57,7 @@
 
 #define SOLENOID_LEFT					7
 #define SOLENOID_RIGHT					6
+#define SOLENOID_LOCK					5
+#define SOLENOID_UNLOCK					4
 
 #endif

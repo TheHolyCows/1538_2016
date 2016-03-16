@@ -6,6 +6,7 @@ OperatorController::OperatorController(CowControlBoard *controlboard)
 	m_CB(controlboard)
 {
 	m_IntakeLatch = new CowLib::CowLatch();
+	m_ExhaustLatch = new CowLib::CowLatch();
 	m_ShootLatch = new CowLib::CowLatch();
 	m_SpoolShooterLatch = new CowLib::CowLatch();
 	m_PtoLockLatch = new CowLib::CowLatch();
@@ -79,11 +80,16 @@ void OperatorController::handle(CowRobot *bot)
 		m_ShootLatch->ResetLatch();
 	}
 
-	if(m_CB->GetOperatorButton(3))
+	if(m_ExhaustLatch->Latch(m_CB->GetOperatorButton(3)))
 	{
 		//bot->GetShooter()->SetManualSpeed(1);
 		std::cout << "Setting state to EXHAUST" << std::endl;
 		bot->GetBallHandler()->SetState(EXHAUST);
+		bot->GetBallHandler()->SetShooterState(MANUAL_CONTROL);
+	}
+	else if(!m_CB->GetOperatorButton(3))
+	{
+		m_ExhaustLatch->ResetLatch();
 	}
 
 	// Turn on Shooter

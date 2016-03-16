@@ -11,7 +11,8 @@ CowPTO::CowPTO(Solenoid *solenoidLeft, Solenoid *solenoidRight) :
 	m_State(LOCK),
 	m_SolenoidLeft(solenoidLeft),
 	m_SolenoidRight(solenoidRight),
-	m_StartNeutralTime(0)
+	m_StartNeutralTime(0),
+	m_JimmyMode(false)
 {
 	// TODO Auto-generated constructor stub
 
@@ -31,6 +32,22 @@ void CowPTO::SetState(e_PTO_State state)
 	{
 		m_StartNeutralTime = Timer::GetFPGATimestamp();
 	}
+}
+
+bool CowPTO::JimmyMode()
+{
+	return m_JimmyMode;
+}
+
+bool CowPTO::HangRequested()
+{
+	bool value = false;
+	if(m_State == ENGAGE)
+	{
+		value = true;
+	}
+
+	return value;
 }
 
 void CowPTO::Handle()
@@ -54,6 +71,9 @@ void CowPTO::Handle()
 			m_SolenoidRight->Set(true);
 
 			double elapsedTime = Timer::GetFPGATimestamp() - m_StartNeutralTime;
+			//Jimmy the drivetrain
+			m_JimmyMode = true;
+
 			if(elapsedTime >= 0.100)
 			{
 				SetState(NEUTRAL);
@@ -64,6 +84,11 @@ void CowPTO::Handle()
 		{
 			m_SolenoidLeft->Set(false);
 			m_SolenoidRight->Set(true);
+			double elapsedTime = Timer::GetFPGATimestamp() - m_StartNeutralTime;
+			if(elapsedTime >= 0.250)
+			{
+				m_JimmyMode = false;
+			}
 			break;
 		}
 		case ENGAGE:// button 4
