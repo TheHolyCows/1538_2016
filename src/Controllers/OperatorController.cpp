@@ -117,16 +117,16 @@ void OperatorController::handle(CowRobot *bot)
 		m_PtoLockLatch->ResetLatch();
 	}
 
-	if(m_PtoNeutralLatch->Latch(m_CB->GetOperatorButton(3)))
-	{
-		std::cout << "Setting state to PTO NEUTRAL" << std::endl;
-
-		bot->GetCowPTO()->SetState(ENTER_NEUTRAL);
-	}
-	else if(!m_CB->GetOperatorButton(3))
-	{
-		m_PtoNeutralLatch->ResetLatch();
-	}
+//	if(m_PtoNeutralLatch->Latch(m_CB->GetOperatorButton(3)))
+//	{
+//		std::cout << "Setting state to PTO NEUTRAL" << std::endl;
+//
+//		bot->GetCowPTO()->SetState(ENTER_NEUTRAL);
+//	}
+//	else if(!m_CB->GetOperatorButton(3))
+//	{
+//		m_PtoNeutralLatch->ResetLatch();
+//	}
 
 	if(m_PtoEngageLatch->Latch(m_CB->GetOperatorButton(4)))
 	{

@@ -19,7 +19,7 @@ CowRobot::CowRobot()
 	m_RightDriveB = new CANTalon(DRIVE_RIGHT_B);
 	m_RightDriveC = new CANTalon(DRIVE_RIGHT_C);
 
-	m_DriveEncoder = new Encoder(MXP_QEI_5_A, MXP_QEI_5_B, true, Encoder::k1X);
+	m_DriveEncoder = new Encoder(MXP_QEI_5_A, MXP_QEI_5_B, false, Encoder::k1X);
 	m_DriveEncoder->SetDistancePerPulse(0.05235983333333); // 6*pi/360
 
 	m_QEI2 = new Encoder(MXP_QEI_2_A, MXP_QEI_2_B, true, Encoder::k4X);
@@ -212,6 +212,8 @@ bool CowRobot::DriveWithHeading(double heading, double speed)
 	double error = heading - m_Gyro->GetAngle();
 	double dError = error - m_PreviousGyroError;
 	double output = PID_P*error + PID_D*dError;
+
+	speed = -speed;
 				
 	DriveLeftRight(speed-output, speed+output);
 	
