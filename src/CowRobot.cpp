@@ -213,7 +213,7 @@ bool CowRobot::DriveWithHeading(double heading, double speed)
 	double dError = error - m_PreviousGyroError;
 	double output = PID_P*error + PID_D*dError;
 
-	speed = -speed;
+	speed *= -speed;
 				
 	DriveLeftRight(speed-output, speed+output);
 	

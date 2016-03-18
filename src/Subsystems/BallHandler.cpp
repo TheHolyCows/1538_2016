@@ -78,9 +78,8 @@ void BallHandler::Handle()
 		  //double watts = fabs(m_Intake->GetWatts());
 		  double elapsedTime = Timer::GetFPGATimestamp() - m_StartTimeIntake;
 		  //std::cout << "Watts: " << watts << std::endl;
-		  if((fabs(m_Shooter->GetMotorASpeed()) > CONSTANT("INTAKE_SHOOTER_DETECT_RPM") ||
-				  fabs(m_Shooter->GetMotorBSpeed()) > CONSTANT("INTAKE_SHOOTER_DETECT_RPM") )
-				  && fabs(m_Shooter->GetMotorBSpeed()) > CONSTANT("INTAKE_SHOOTER_DETECT_RPM") && elapsedTime > CONSTANT("INTAKE_STABLIZING_TIME"))
+		  if((fabs(m_Shooter->GetMotorASpeed()) > CONSTANT("INTAKE_SHOOTER_DETECT_RPM") &&
+				  fabs(m_Shooter->GetMotorBSpeed()) > CONSTANT("INTAKE_SHOOTER_DETECT_RPM")))
 		  {
 			  SetState(INTAKE_MOAR);
 			  m_StartTimeIntake = Timer::GetFPGATimestamp();
