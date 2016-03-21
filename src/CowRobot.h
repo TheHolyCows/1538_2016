@@ -52,6 +52,7 @@ private:
 
 	Solenoid *m_SolenoidLeft;
 	Solenoid *m_SolenoidRight;
+
 	CowPTO *m_CowPTO;
 
 	PowerDistributionPanel *m_PowerDistributionPanel;
@@ -66,6 +67,7 @@ private:
 	double m_PreviousDriveError;
 
 	int32_t m_JimmyCounts;
+	bool m_Hang;
 
 	void SetLeftMotors(float val);
 	void SetRightMotors(float val);
@@ -79,12 +81,14 @@ public:
 	void PrintToDS();
 	double GetDriveDistance();
 	bool DriveDistance(double distance);
-	bool DriveDistanceWithHeading(double heading, double distance);
+	bool DriveDistanceWithHeading(double heading, double distance, double speed);
 	bool DriveWithHeading(double heading, double speed);
 	bool DriveWithHeading(double heading, double speed, double maxSpeed);
 	void DriveSpeedTurn(float speed, float turn, bool quickTurn);
 	void DriveLeftRight(float leftDriveValue, float rightDriveValue);
+	bool TurnToHeading(double heading);
 	void QuickTurn(float turn);
+	void Hang();
 	
 	CowLib::CowAlphaNum *GetDisplay()
 	{

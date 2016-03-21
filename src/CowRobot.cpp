@@ -27,6 +27,7 @@ CowRobot::CowRobot()
 	m_QEI4 = new Encoder(MXP_QEI_4_A, MXP_QEI_4_B, true, Encoder::k1X);
 	//m_QEI5 = new Encoder(MXP_QEI_5_A, MXP_QEI_5_B, true, Encoder::k1X);
 
+
 	m_Arm = new Arm(ARM_A, ARM_B, m_QEI2);
 	m_CenteringIntake = new CenteringIntake(LEFT_CENTER, RIGHT_CENTER);
 	m_Intake = new Intake(INTAKE_A, INTAKE_B);
@@ -51,6 +52,7 @@ CowRobot::CowRobot()
 	m_PreviousDriveError = 0;
 
 	m_JimmyCounts = 0;
+	m_Hang = false;
 }
 
 void CowRobot::Reset()
@@ -140,27 +142,29 @@ void CowRobot::handle()
 	{
 		bool statusHang = DriveDistance(CONSTANT("PTO_DRIVE_DISTANCE"));
 
-		if(statusHang)
-		{
-			m_CowPTO->SetState(LOCK);
-		}
+//		if(statusHang)
+//		{
+//			m_CowPTO->SetState(LOCK);
+//		}
 	}
 
 	SetLeftMotors(tmpLeftMotor);
 	SetRightMotors(tmpRightMotor);
-//	if(m_DSUpdateCount % 10 == 0)
-//	{
-//		//5 is drive
-//		//4 s1
-//		//3 s2
-//		//2 arm
-//		//1 unused
-//
-//		//std::cout << "Gyro: " <<  m_Gyro->GetAngle() << std::endl;
+	if(m_DSUpdateCount % 10 == 0)
+	{
+		//5 is drive
+		//4 s1
+		//3 s2
+		//2 arm
+		//1 unused
+
+		//std::cout << "Gyro: " <<  m_Gyro->GetAngle() << std::endl;
 //		std::cout << std::dec
 //				  << m_DriveEncoder->Get() << " "
 //				  << m_Gyro->GetAngle() << std::endl;
-//	}
+		std::cout << "Heading: " << m_Gyro->GetAngle() << " " << m_DriveEncoder->GetDistance() << std::endl;
+
+	}
 
 	m_DSUpdateCount++;
 	m_JimmyCounts++;
@@ -189,7 +193,7 @@ bool CowRobot::DriveDistance(double distance)
 	return (fabs(error) < 4 && CowLib::UnitsPerSecond(fabs(dError)) < 1);
 }
 
-bool CowRobot::DriveDistanceWithHeading(double heading, double distance)
+bool CowRobot::DriveDistanceWithHeading(double heading, double distance, double speed)
 {
 	double PID_P = CONSTANT("DRIVE_P");
 	double PID_D = CONSTANT("DRIVE_D");
@@ -197,12 +201,32 @@ bool CowRobot::DriveDistanceWithHeading(double heading, double distance)
 	double dError = error - m_PreviousDriveError;
 	double output = PID_P*error + PID_D*dError;
 	
-	bool headingResult = DriveWithHeading(heading,
-			CowLib::LimitMix(output, CONSTANT("DRIVE_MAX_SPEED")));
+	double throttle = CowLib::LimitMix(output, speed);
+	throttle *= -1;
+	std::cout << "Drive request speed: " << throttle << std::endl;
+
+	bool headingResult = DriveWithHeading(heading, throttle);
 	
 	m_PreviousDriveError = error;
 	
 	return (fabs(error) < 4 && CowLib::UnitsPerSecond(fabs(dError)) < 1 && headingResult);
+}
+
+bool CowRobot::TurnToHeading(double heading)
+{
+	double PID_P = CONSTANT("TURN_P");
+	double PID_D = CONSTANT("TURN_D");
+	double error = heading - m_Gyro->GetAngle();
+	double dError = error - m_PreviousGyroError;
+	double output = PID_P*error + PID_D*dError;
+
+	//speed *= -speed;
+
+	DriveLeftRight(-output, output);
+
+	m_PreviousGyroError = error;
+
+	return (fabs(error) < 1 && CowLib::UnitsPerSecond(fabs(dError)) < 0.5);
 }
 
 bool CowRobot::DriveWithHeading(double heading, double speed)
@@ -213,7 +237,7 @@ bool CowRobot::DriveWithHeading(double heading, double speed)
 	double dError = error - m_PreviousGyroError;
 	double output = PID_P*error + PID_D*dError;
 
-	speed *= -speed;
+	//speed *= -speed;
 				
 	DriveLeftRight(speed-output, speed+output);
 	
@@ -224,7 +248,6 @@ bool CowRobot::DriveWithHeading(double heading, double speed)
 
 bool CowRobot::DriveWithHeading(double heading, double speed, double maxSpeed)
 {
-	speed *= -1;
 	double PID_P = CONSTANT("TURN_P");
 	double PID_D = CONSTANT("TURN_D");
 	double error = heading - m_Gyro->GetAngle();
@@ -303,6 +326,14 @@ void CowRobot::QuickTurn(float turnRate)
 	float right = turnRate;
 
 	DriveLeftRight(left, right);
+}
+
+void CowRobot::Hang()
+{
+	m_DriveEncoder->Reset();
+	m_Hang = true;
+	m_CowPTO->SetState(ENGAGE);
+
 }
 
 // sets the left side motors

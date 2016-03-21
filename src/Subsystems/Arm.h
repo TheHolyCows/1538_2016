@@ -23,6 +23,8 @@ private:
 	bool m_LockedState;
 	float m_Speed;
 	float m_Setpoint;
+
+	bool m_OffsetPosition;
 	Arm();
 public:
 	Arm(uint8_t motorA, uint8_t motorB, Encoder* encoder);
@@ -31,6 +33,8 @@ public:
 	void SetPosition(float position);
 	float GetSetpoint();
 	void SetLockState(bool state);
+	bool GetLockState();
+	void UseOffsetPosition();
 	void Handle();
 	void ResetConstants();
 	void Reset();

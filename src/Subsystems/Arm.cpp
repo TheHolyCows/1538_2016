@@ -19,7 +19,8 @@ Arm::Arm(uint8_t motorA, uint8_t motorB, Encoder* encoder)
 	m_LockSolenoid(NULL),
 	m_LockedState(false),
 	m_Speed(0),
-	m_Setpoint(0)
+	m_Setpoint(0),
+	m_OffsetPosition(false)
 {
 	m_MotorA = new CANTalon(motorA);
 	m_MotorB = new CANTalon(motorB);
@@ -66,18 +67,32 @@ void Arm::SetLockState(bool state)
 	}
 }
 
+bool Arm::GetLockState()
+{
+	return m_LockedState;
+}
+
+void Arm::UseOffsetPosition()
+{
+	m_OffsetPosition = true;
+}
+
 void Arm::Handle()
 {
 	if(m_MotorA && m_MotorB)
 	{
+		double encoderPosition = m_Encoder->GetRaw();
+
+		if(m_OffsetPosition)
+		{
+			encoderPosition += CONSTANT("STARTING_POSITION");
+		}
 
 		std::cout << std::dec << "Arm Position: "
-				  << m_Encoder->Get()
-				  << " "
-				  << m_Encoder->GetRaw()
+				  << encoderPosition
 				  << std::endl;
 
-		if(GetSetpoint() > m_Encoder->GetRaw())
+		if(GetSetpoint() > encoderPosition)
 		{
 			m_PID->UpdatePConstant(CONSTANT("ARM_P") * CONSTANT("ARM_DOWN_PROFILE"));
 		}
@@ -86,12 +101,17 @@ void Arm::Handle()
 			m_PID->UpdatePConstant(CONSTANT("ARM_P"));
 		}
 
-		m_Speed = m_PID->Calculate(m_Encoder->GetRaw());
+		m_Speed = m_PID->Calculate(encoderPosition);
 		m_Speed = CowLib::LimitMix(m_Speed, CONSTANT("ARM_MAX_SPEED"));
 
 		if(m_PID->OnTarget(CONSTANT("ARM_TOLERANCE")))
 		{
 			m_PID->ResetIntegrator();
+		}
+
+		if(m_LockedState)
+		{
+			m_Speed = 0;
 		}
 		m_MotorA->Set(m_Speed);
 		m_MotorB->Set(m_Speed);

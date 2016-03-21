@@ -12,7 +12,7 @@ BallHandler::BallHandler(CenteringIntake *centeringIntake, Intake *intake, Shoot
 	m_CenteringIntake(centeringIntake),
 	m_Intake(intake),
 	m_Shooter(shooter),
-	m_State(NO_BALL_AND_WAIT),
+	m_State(BALL_AND_WAIT),
 	m_ShooterState(MANUAL_CONTROL),
 	m_StartTimeShooter(0),
 	m_StartTimeIntake(0),
@@ -217,6 +217,11 @@ void BallHandler::Handle()
 e_BallHandleState BallHandler::GetState()
 {
    return m_State;
+}
+
+e_ShooterState BallHandler::GetShooterState()
+{
+	return m_ShooterState;
 }
 
 BallHandler::~BallHandler()

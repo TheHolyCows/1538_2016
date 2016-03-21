@@ -74,7 +74,7 @@ void CowPTO::Handle()
 			//Jimmy the drivetrain
 			m_JimmyMode = true;
 
-			if(elapsedTime >= 0.100)
+			if(elapsedTime >= 0.125)
 			{
 				SetState(NEUTRAL);
 			}

@@ -40,23 +40,87 @@ void AutoModeController::handle(CowRobot *bot)
 		case CMD_WAIT:
 		{
 			bot->DriveWithHeading(m_CurrentCommand.m_Heading, 0);
+			bot->GetArm()->SetPosition(m_CurrentCommand.m_Arm);
 			doNothing(bot);
 			break;
 		}
 		case CMD_TURN:
 		{
-			result = bot->DriveWithHeading(m_CurrentCommand.m_Heading, 0);
+			result = bot->TurnToHeading(m_CurrentCommand.m_Heading);
+			bot->GetArm()->SetPosition(m_CurrentCommand.m_Arm);
+
 			break;
 		}
 		case CMD_HOLD_DISTANCE:
 		{
-			bot->DriveDistanceWithHeading(m_CurrentCommand.m_Heading, m_CurrentCommand.m_EncoderCount);
+			bot->DriveDistanceWithHeading(m_CurrentCommand.m_Heading, m_CurrentCommand.m_EncoderCount, m_CurrentCommand.m_Speed);
+			bot->GetArm()->SetPosition(m_CurrentCommand.m_Arm);
+
 			result = false;
 			break;
 		}
 		case CMD_DRIVE_DISTANCE:
 		{
-			result = bot->DriveDistanceWithHeading(m_CurrentCommand.m_Heading, m_CurrentCommand.m_EncoderCount);
+			result = bot->DriveDistanceWithHeading(m_CurrentCommand.m_Heading, m_CurrentCommand.m_EncoderCount,  m_CurrentCommand.m_Speed );
+			bot->GetArm()->SetPosition(m_CurrentCommand.m_Arm);
+
+			break;
+		}
+		case CMD_INTAKE:
+		{
+			bot->DriveDistanceWithHeading(m_CurrentCommand.m_Heading, m_CurrentCommand.m_EncoderCount,m_CurrentCommand.m_Speed);
+			bot->GetArm()->SetPosition(m_CurrentCommand.m_Arm);
+
+			e_BallHandleState ballState = bot->GetBallHandler()->GetState();
+			if(ballState == INTAKE_MOAR ||
+			   ballState == STAGE ||
+			   ballState == BALL_AND_WAIT)
+			{
+				result = true;
+			}
+			else if(ballState == NO_BALL_AND_WAIT)
+			{
+				bot->GetBallHandler()->SetState(INTAKE);
+			}
+			break;
+		}
+		case CMD_SPOOL_SHOOTER:
+		{
+			bot->DriveDistanceWithHeading(m_CurrentCommand.m_Heading, m_CurrentCommand.m_EncoderCount,  m_CurrentCommand.m_Speed);
+			bot->GetArm()->SetPosition(m_CurrentCommand.m_Arm);
+
+			e_ShooterState shooterState = bot->GetBallHandler()->GetShooterState();
+
+			if(shooterState == MANUAL_CONTROL)
+			{
+				bot->GetBallHandler()->SetShooterState(SPOOL_PID_CONTROL);
+			}
+
+			result = true;
+
+			break;
+		}
+		case CMD_SHOOT:
+		{
+			bot->DriveDistanceWithHeading(m_CurrentCommand.m_Heading, m_CurrentCommand.m_EncoderCount,  m_CurrentCommand.m_Speed);
+			bot->GetArm()->SetPosition(m_CurrentCommand.m_Arm);
+
+			e_BallHandleState ballState = bot->GetBallHandler()->GetState();
+			e_ShooterState shooterState = bot->GetBallHandler()->GetShooterState();
+
+			if(ballState == BALL_AND_WAIT && shooterState == SPOOL_PID_CONTROL)
+			{
+				bot->GetBallHandler()->SetState(SHOOT);
+			}
+			else if(ballState == NO_BALL_AND_WAIT && shooterState == MANUAL_CONTROL)
+			{
+				result = true;
+			}
+
+			break;
+		}
+		case CMD_RESET_DRIVE_ENCODER:
+		{
 			break;
 		}
 		default:
@@ -72,7 +136,11 @@ void AutoModeController::handle(CowRobot *bot)
 	{
 		// This command is done, go get the next one
 		if(m_CommandList.size() > 0 )
-		{			
+		{
+			if(m_CurrentCommand.m_Command == CMD_TURN)
+			{
+				bot->GetEncoder()->Reset();
+			}
 			m_CurrentCommand = m_CommandList.front();
 			m_CommandList.pop_front();
 			//bot->GetEncoder()->Reset();
@@ -95,4 +163,6 @@ void AutoModeController::handle(CowRobot *bot)
 void AutoModeController::doNothing(CowRobot *bot)
 {
 	bot->DriveLeftRight(0, 0);
+	bot->GetArm()->SetPosition(m_CurrentCommand.m_Arm);
+
 }

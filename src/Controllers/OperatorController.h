@@ -27,6 +27,8 @@ private:
 	CowLib::CowLatch *m_PtoLockLatch;
 	CowLib::CowLatch *m_PtoNeutralLatch;
 	CowLib::CowLatch *m_PtoEngageLatch;
+	CowLib::CowLatch *m_ArmLockLatch;
+
 
 public:
 	OperatorController(CowControlBoard *controlboard);

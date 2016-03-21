@@ -42,6 +42,7 @@ public:
    ~BallHandler();
    void Handle();
    e_BallHandleState GetState();
+   e_ShooterState GetShooterState();
    void SetState(e_BallHandleState state);
    void SetShooterState(e_ShooterState state);
 

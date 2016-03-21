@@ -45,11 +45,13 @@ void CowBase::AutonomousInit()
 	m_AutoController->SetCommandList(AutoModes::GetInstance()->GetCommandList());
 	m_Bot->SetController(m_AutoController);
 	m_Bot->Reset();
+	m_Bot->GetArm()->SetLockState(false);
 }
 void CowBase::TeleopInit()
 {
 	m_Bot->GetGyro()->FinalizeCalibration();
 	m_Bot->SetController(m_OpController);
+	m_Bot->GetArm()->SetLockState(false);
 }
 
 void CowBase::DisabledContinuous()
@@ -85,6 +87,13 @@ void CowBase::DisabledPeriodic()
 		}
 	}
 	
+	if(m_ControlBoard->GetSteeringButton(7))
+	{
+		m_Bot->GetArm()->UseOffsetPosition();
+		std::string temp = "Using Offset Position";
+		DriverStation::GetInstance().ReportError(temp);
+	}
+
 //	m_Bot->PrintToDS();
 }
 void CowBase::AutonomousPeriodic()
