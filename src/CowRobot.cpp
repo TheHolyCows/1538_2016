@@ -162,7 +162,7 @@ void CowRobot::handle()
 //		std::cout << std::dec
 //				  << m_DriveEncoder->Get() << " "
 //				  << m_Gyro->GetAngle() << std::endl;
-		std::cout << "Heading: " << m_Gyro->GetAngle() << " " << m_DriveEncoder->GetDistance() << std::endl;
+		//std::cout << "Heading: " << m_Gyro->GetAngle() << " " << m_DriveEncoder->GetDistance() << std::endl;
 
 	}
 

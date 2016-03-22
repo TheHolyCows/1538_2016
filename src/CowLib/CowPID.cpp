@@ -7,6 +7,7 @@
 
 #include <CowLib/CowPID.h>
 #include <sstream>
+#include <iostream>
 
 namespace CowLib {
 
@@ -105,6 +106,8 @@ void CowPID::Reset()
 
 bool CowPID::OnTarget(double tolerance)
 {
+	//double toleranceDelta = fabs(m_last_input - m_setpoint);
+	//std::cout << "Target: " << toleranceDelta << ", last in: " << m_last_input << " tolerance: " << tolerance << std::endl;
     return m_last_input != NAN && fabs(m_last_input - m_setpoint) < tolerance;
 }
 std::string CowPID::GetState()

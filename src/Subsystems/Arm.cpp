@@ -88,9 +88,9 @@ void Arm::Handle()
 			encoderPosition += CONSTANT("STARTING_POSITION");
 		}
 
-		std::cout << std::dec << "Arm Position: "
-				  << encoderPosition
-				  << std::endl;
+//		std::cout << std::dec << "Arm Position: "
+//				  << encoderPosition
+//				  << std::endl;
 
 		if(GetSetpoint() > encoderPosition)
 		{

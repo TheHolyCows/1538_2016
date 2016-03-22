@@ -33,16 +33,18 @@ void OperatorController::handle(CowRobot *bot)
 								(armJoystick));
 
 	//Batter shot
-	if(m_CB->GetOperatorButton(2))
+	if(m_CB->GetOperatorButton(9))
 	{
 		bot->GetArm()->SetPosition(CONSTANT("BATTER_POSITION"));
 	}
 
 	//Batter shot
-	if(m_CB->GetOperatorButton(7))
+	if(m_CB->GetOperatorButton(8))
 	{
 		bot->GetArm()->SetPosition(CONSTANT("EDGE_FIELD"));
 	}
+
+	//10 is mid field
 
 	if(m_CB->GetSteeringButton(3))
 	{
@@ -58,47 +60,47 @@ void OperatorController::handle(CowRobot *bot)
 
 
 	// Intake
-	if(m_IntakeLatch->Latch(m_CB->GetOperatorButton(5)))
+	if(m_IntakeLatch->Latch(m_CB->GetOperatorButton(4)))
 	{
 		std::cout << "Setting state to INTAKE" << std::endl;
 
 		bot->GetBallHandler()->SetState(INTAKE);
 	}
-	else if(!m_CB->GetOperatorButton(5))
+	else if(!m_CB->GetOperatorButton(4))
 	{
 		m_IntakeLatch->ResetLatch();
 	}
 
-	if(m_ShootLatch->Latch(m_CB->GetOperatorButton(9)))
+	if(m_ShootLatch->Latch(m_CB->GetOperatorButton(5)))
 	{
 		std::cout << "Setting state to SHOOT_STAGE" << std::endl;
 
 		bot->GetBallHandler()->SetState(SHOOT_STAGE);
 	}
-	else if(!m_CB->GetOperatorButton(9))
+	else if(!m_CB->GetOperatorButton(5))
 	{
 		m_ShootLatch->ResetLatch();
 	}
 
-	if(m_ExhaustLatch->Latch(m_CB->GetOperatorButton(3)))
+	if(m_ExhaustLatch->Latch(m_CB->GetOperatorButton(7)))
 	{
 		//bot->GetShooter()->SetManualSpeed(1);
 		std::cout << "Setting state to EXHAUST" << std::endl;
 		bot->GetBallHandler()->SetState(EXHAUST);
 		bot->GetBallHandler()->SetShooterState(MANUAL_CONTROL);
 	}
-	else if(!m_CB->GetOperatorButton(3))
+	else if(!m_CB->GetOperatorButton(7))
 	{
 		m_ExhaustLatch->ResetLatch();
 	}
 
 	// Turn on Shooter
-	if(m_SpoolShooterLatch->Latch(m_CB->GetOperatorButton(10)))
+	if(m_SpoolShooterLatch->Latch(!m_CB->GetOperatorButton(1)))
 	{
 		std::cout << "Setting state to SPOOL_PID_CONTROL" << std::endl;
 		bot->GetBallHandler()->SetShooterState(SPOOL_PID_CONTROL);
 	}
-	else if(!m_CB->GetOperatorButton(10))
+	else if(m_CB->GetOperatorButton(1))
 	{
 		m_SpoolShooterLatch->ResetLatch();
 	}
@@ -124,7 +126,7 @@ void OperatorController::handle(CowRobot *bot)
 		bot->GetArm()->SetPosition(CONSTANT("HANGING_POSITION"));
 		bot->GetCowPTO()->SetState(ENTER_NEUTRAL);
 	}
-	else if(!m_CB->GetOperatorButton(3))
+	else if(!m_CB->GetSteeringButton(8))
 	{
 		m_PtoNeutralLatch->ResetLatch();
 	}
@@ -134,19 +136,19 @@ void OperatorController::handle(CowRobot *bot)
 		std::cout << "Setting state to PTO ENGAGE" << std::endl;
 		bot->Hang();
 	}
-	else if(!m_CB->GetOperatorButton(8))
+	else if(!m_CB->GetSteeringButton(1))
 	{
 		m_PtoEngageLatch->ResetLatch();
 	}
 
 
-	if(m_ArmLockLatch->Latch(m_CB->GetOperatorButton(4)))
+	if(m_ArmLockLatch->Latch(m_CB->GetOperatorButton(3)))
 	{
 		bool armLockState = bot->GetArm()->GetLockState();
 
 		bot->GetArm()->SetLockState(!armLockState);
 	}
-	else if(!m_CB->GetOperatorButton(4))
+	else if(!m_CB->GetOperatorButton(3))
 	{
 		m_ArmLockLatch->ResetLatch();
 	}
