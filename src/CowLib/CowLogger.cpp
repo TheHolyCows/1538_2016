@@ -27,7 +27,7 @@ CowLogger::CowLogger()
 	time(&rawTime);
 	timeInfo = localtime(&rawTime);
 	char buffer[80];
-	strftime(buffer, 80, "/home/lvuser/DebugLog_%h_%d_%j_%H%M.txt", timeInfo);
+	strftime(buffer, 80, "/home/lvuser/logs/DebugLog_%h_%d_%j_%H%M.txt", timeInfo);
 	m_OutputFile.open(buffer);
 	std::cout << "Opened file for debugging" << std::endl;
 }

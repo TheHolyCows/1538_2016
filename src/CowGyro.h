@@ -69,6 +69,7 @@ public:
 	virtual ~CowGyro();
 	float GetAngle();
 	double GetRate();
+	void ResetAngle();
 	static void BeginCalibration();
 	static void FinalizeCalibration();
 	static CowGyro* GetInstance();

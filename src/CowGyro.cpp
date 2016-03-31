@@ -77,10 +77,7 @@ void CowGyro::Handle()
 
 	while(true)
 	{
-		if(m_LastTime == 0)
-		{
-			m_LastTime = Timer::GetFPGATimestamp();
-		}
+
 
 		std::this_thread::sleep_for(std::chrono::milliseconds((int) ((1.0 / K_READING_RATE) * 1000)));
 
@@ -125,6 +122,11 @@ void CowGyro::Handle()
 		// Calculate
 		if(m_IsZeroed)
 		{
+			if(m_LastTime == 0)
+			{
+				m_LastTime = Timer::GetFPGATimestamp();
+			}
+
 			double currentTime = Timer::GetFPGATimestamp();
 			double timeElapsed = currentTime - m_LastTime;
 			m_LastTime = currentTime;
@@ -329,6 +331,13 @@ void CowGyro::Reset()
 	m_VolatileRate = 0;
 	m_ZeroBias = 0;
 }
+
+void CowGyro::ResetAngle()
+{
+	m_Angle = 0;
+	m_VolatileRate = 0;
+}
+
 
 void CowGyro::BeginCalibration()
 {

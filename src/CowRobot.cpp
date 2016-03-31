@@ -162,7 +162,7 @@ void CowRobot::handle()
 //		std::cout << std::dec
 //				  << m_DriveEncoder->Get() << " "
 //				  << m_Gyro->GetAngle() << std::endl;
-		//std::cout << "Heading: " << m_Gyro->GetAngle() << " " << m_DriveEncoder->GetDistance() << std::endl;
+		std::cout << "Heading: " << m_Gyro->GetAngle() << " " << m_DriveEncoder->GetDistance() << std::endl;
 
 	}
 
@@ -203,7 +203,7 @@ bool CowRobot::DriveDistanceWithHeading(double heading, double distance, double 
 	
 	double throttle = CowLib::LimitMix(output, speed);
 	throttle *= -1;
-	std::cout << "Drive request speed: " << throttle << std::endl;
+	//std::cout << "Drive request speed: " << throttle << std::endl;
 
 	bool headingResult = DriveWithHeading(heading, throttle);
 	

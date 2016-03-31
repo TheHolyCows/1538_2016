@@ -42,6 +42,7 @@ void CowBase::DisabledInit()
 void CowBase::AutonomousInit()
 {
 	m_Bot->GetGyro()->FinalizeCalibration();
+	m_Bot->GetGyro()->ResetAngle();
 	m_AutoController->SetCommandList(AutoModes::GetInstance()->GetCommandList());
 	m_Bot->SetController(m_AutoController);
 	m_Bot->Reset();

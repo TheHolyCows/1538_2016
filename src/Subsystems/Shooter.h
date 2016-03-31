@@ -20,8 +20,8 @@ private:
 	Encoder *m_EncoderA;
 	Encoder *m_EncoderB;
 
-	CowLib::CowPID* m_PID_A;
-	CowLib::CowPID* m_PID_B;
+	CowLib::CowPID* m_PID_A_Rate;
+	CowLib::CowPID* m_PID_B_Rate;
 
 	bool m_PIDEnabled;
 	double m_EncoderASpeed;
