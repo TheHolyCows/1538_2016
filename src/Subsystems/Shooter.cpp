@@ -9,7 +9,6 @@
 #include "../CowConstants.h"
 #include <cmath>
 
-
 Shooter::Shooter(uint8_t motorA, uint8_t motorB, Encoder* encoderA, Encoder* encoderB)
 :
 	m_MotorA(0),
@@ -26,6 +25,8 @@ Shooter::Shooter(uint8_t motorA, uint8_t motorB, Encoder* encoderA, Encoder* enc
 	m_PID_A_Rate = new CowLib::CowPID(CONSTANT("SHOOTER_A_P"), CONSTANT("SHOOTER_A_I"), CONSTANT("SHOOTER_A_D"), CONSTANT("SHOOTER_A_F"));
 	m_PID_B_Rate = new CowLib::CowPID(CONSTANT("SHOOTER_B_P"), CONSTANT("SHOOTER_B_I"), CONSTANT("SHOOTER_B_D"), CONSTANT("SHOOTER_B_F"));
 
+	m_LPF_A = new CowLib::CowLPF(CONSTANT("SHOOTER_A_BETA"));
+	m_LPF_B = new CowLib::CowLPF(CONSTANT("SHOOTER_B_BETA"));
 }
 
 void Shooter::SetManualSpeed(float speed)
@@ -90,6 +91,10 @@ void Shooter::ResetConstants()
 {
 	m_PID_A_Rate->UpdateConstants(CONSTANT("SHOOTER_A_P"), CONSTANT("SHOOTER_A_I"), CONSTANT("SHOOTER_A_D"), 0);
 	m_PID_B_Rate->UpdateConstants(CONSTANT("SHOOTER_B_P"), CONSTANT("SHOOTER_B_I"), CONSTANT("SHOOTER_B_D"), 0);
+
+	m_LPF_A->UpdateBeta(CONSTANT("SHOOTER_A_BETA"));
+	m_LPF_B->UpdateBeta(CONSTANT("SHOOTER_B_BETA"));
+
 }
 
 void Shooter::Handle()

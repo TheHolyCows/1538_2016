@@ -29,6 +29,7 @@ CowBase::~CowBase()
 void CowBase::RobotInit()
 {
 	m_Bot->Reset();
+	m_Bot->GetArm()->SetLockState(true);
 }
 
 void CowBase::DisabledInit()

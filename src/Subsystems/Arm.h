@@ -25,6 +25,7 @@ private:
 	float m_Setpoint;
 
 	bool m_OffsetPosition;
+	double m_UnlockTime;
 	Arm();
 public:
 	Arm(uint8_t motorA, uint8_t motorB, Encoder* encoder);

@@ -20,7 +20,8 @@ Arm::Arm(uint8_t motorA, uint8_t motorB, Encoder* encoder)
 	m_LockedState(false),
 	m_Speed(0),
 	m_Setpoint(0),
-	m_OffsetPosition(false)
+	m_OffsetPosition(false),
+	m_UnlockTime(0)
 {
 	m_MotorA = new CANTalon(motorA);
 	m_MotorB = new CANTalon(motorB);
@@ -58,12 +59,13 @@ void Arm::SetLockState(bool state)
 		m_UnlockSolenoid->Set(false);
 		m_LockSolenoid->Set(true);
 		m_LockedState = true;
+		m_UnlockTime = 0;
 	}
 	else
 	{
 		m_UnlockSolenoid->Set(true);
 		m_LockSolenoid->Set(false);
-		m_LockedState = false;
+		m_UnlockTime = Timer::GetFPGATimestamp();
 	}
 }
 
@@ -81,6 +83,11 @@ void Arm::Handle()
 {
 	if(m_MotorA && m_MotorB)
 	{
+		if((Timer::GetFPGATimestamp() - m_UnlockTime) > 0.25 && m_LockedState)
+		{
+			m_LockedState = false;
+		}
+
 		double encoderPosition = m_Encoder->GetRaw();
 
 		if(m_OffsetPosition)
@@ -108,6 +115,7 @@ void Arm::Handle()
 		{
 			m_PID->ResetIntegrator();
 		}
+
 
 		if(m_LockedState)
 		{

@@ -10,6 +10,7 @@
 
 #include <WPILib.h>
 #include "../CowLib/CowPID.h"
+#include "../CowLib/CowLPF.h"
 
 class Shooter {
 private:
@@ -22,6 +23,10 @@ private:
 
 	CowLib::CowPID* m_PID_A_Rate;
 	CowLib::CowPID* m_PID_B_Rate;
+
+	CowLib::CowLPF* m_LPF_A;
+	CowLib::CowLPF* m_LPF_B;
+
 
 	bool m_PIDEnabled;
 	double m_EncoderASpeed;

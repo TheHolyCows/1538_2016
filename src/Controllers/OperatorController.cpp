@@ -38,6 +38,12 @@ void OperatorController::handle(CowRobot *bot)
 		bot->GetArm()->SetPosition(CONSTANT("BATTER_POSITION"));
 	}
 
+	if(m_CB->GetOperatorButton(10))
+	{
+		bot->GetArm()->SetPosition(CONSTANT("RESTING_POSITION"));
+		//bot->GetArm()->RestArm();
+	}
+
 	//Batter shot
 	if(m_CB->GetOperatorButton(8))
 	{
@@ -119,26 +125,36 @@ void OperatorController::handle(CowRobot *bot)
 //		m_PtoLockLatch->ResetLatch();
 //	}
 
-	if(m_PtoNeutralLatch->Latch(m_CB->GetSteeringButton(8)))
-	{
-		std::cout << "Setting state to PTO NEUTRAL" << std::endl;
+//	if(m_PtoNeutralLatch->Latch(m_CB->GetSteeringButton(8)))
+//	{
+//		std::cout << "Setting state to PTO NEUTRAL" << std::endl;
+//
+//		bot->GetArm()->SetPosition(CONSTANT("HANGING_POSITION"));
+//		bot->GetCowPTO()->SetState(ENTER_NEUTRAL);
+//	}
+//	else if(!m_CB->GetSteeringButton(8))
+//	{
+//		m_PtoNeutralLatch->ResetLatch();
+//	}
 
-		bot->GetArm()->SetPosition(CONSTANT("HANGING_POSITION"));
-		bot->GetCowPTO()->SetState(ENTER_NEUTRAL);
-	}
-	else if(!m_CB->GetSteeringButton(8))
-	{
-		m_PtoNeutralLatch->ResetLatch();
-	}
+//	if(m_PtoEngageLatch->Latch(m_CB->GetSteeringButton(1)))
+//	{
+//		std::cout << "Setting state to PTO ENGAGE" << std::endl;
+//		bot->Hang();
+//	}
+//	else if(!m_CB->GetSteeringButton(1))
+//	{
+//		m_PtoEngageLatch->ResetLatch();
+//	}
 
-	if(m_PtoEngageLatch->Latch(m_CB->GetSteeringButton(1)))
+	if(m_CB->GetSteeringButton(8))
 	{
-		std::cout << "Setting state to PTO ENGAGE" << std::endl;
-		bot->Hang();
+		bot->GetCowPTO()->SetState(ENGAGE);
 	}
-	else if(!m_CB->GetSteeringButton(1))
+	else
 	{
-		m_PtoEngageLatch->ResetLatch();
+		bot->GetCowPTO()->SetState(LOCK);
+
 	}
 
 

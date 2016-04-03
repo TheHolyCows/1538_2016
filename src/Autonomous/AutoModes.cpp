@@ -22,23 +22,53 @@ AutoModes::AutoModes()
 
 	m_Modes["SpyBot"];
 	m_Modes["SpyBot"].push_back(RobotCommand(CMD_SPOOL_SHOOTER, 0, 0, CONSTANT("DRIVE_MAX_SPEED"), CONSTANT("INTAKE_POSITION"), 0.125));
-	m_Modes["SpyBot"].push_back(RobotCommand(CMD_HOLD_DISTANCE, -40.36, 20, CONSTANT("DRIVE_MAX_SPEED"), CONSTANT("EDGE_FIELD"), 1.25));
+	m_Modes["SpyBot"].push_back(RobotCommand(CMD_HOLD_DISTANCE, -56.75, 20, CONSTANT("DRIVE_MAX_SPEED"), CONSTANT("EDGE_FIELD"), 1.25));
 	m_Modes["SpyBot"].push_back(RobotCommand(CMD_TURN, 0, -10, CONSTANT("DRIVE_MAX_SPEED"), CONSTANT("EDGE_FIELD"), 0.75));
-	m_Modes["SpyBot"].push_back(RobotCommand(CMD_HOLD_DISTANCE, -12, -10, CONSTANT("BATTER_MAX_SPEED"), CONSTANT("EDGE_FIELD"), 1));
+	m_Modes["SpyBot"].push_back(RobotCommand(CMD_HOLD_DISTANCE, -16.875, -10, CONSTANT("BATTER_MAX_SPEED"), CONSTANT("EDGE_FIELD"), 1.25));
 
 	m_Modes["SpyBot"].push_back(RobotCommand(CMD_SHOOT, 0, -4.5, CONSTANT("DRIVE_MAX_SPEED"),CONSTANT("EDGE_FIELD"), 0.5));
 	m_Modes["SpyBot"].push_back(RobotCommand(CMD_WAIT, 0, -4.5, CONSTANT("DRIVE_MAX_SPEED"),CONSTANT("EDGE_FIELD"), 0.25));
-	m_Modes["SpyBot"].push_back(RobotCommand(CMD_TURN, 0, -6.5, CONSTANT("DRIVE_MAX_SPEED"), CONSTANT("EDGE_FIELD"), 0.75));
+	m_Modes["SpyBot"].push_back(RobotCommand(CMD_TURN, 0, -45, CONSTANT("DRIVE_MAX_SPEED"), CONSTANT("EDGE_FIELD"), 0.75));
 
-	m_Modes["SpyBot"].push_back(RobotCommand(CMD_HOLD_DISTANCE, 22, -6.5, CONSTANT("BATTER_MAX_SPEED"),CONSTANT("EDGE_FIELD"), 0.5));
+	//m_Modes["SpyBot"].push_back(RobotCommand(CMD_HOLD_DISTANCE, 30.9375, -6.5, CONSTANT("BATTER_MAX_SPEED"),CONSTANT("EDGE_FIELD"), 0.5));
 
-	m_Modes["SpyBot"].push_back(RobotCommand(CMD_TURN, 0, -90, CONSTANT("DRIVE_MAX_SPEED"),CONSTANT("EDGE_FIELD"), 1.25));
-	m_Modes["SpyBot"].push_back(RobotCommand(CMD_DRIVE_DISTANCE, 86, -90, CONSTANT("BEFORE_LOW_BAR_MAX_SPEED"),CONSTANT("AUTO_INTAKE_POSITION"), 1.5));
-	m_Modes["SpyBot"].push_back(RobotCommand(CMD_DRIVE_DISTANCE, 219, -90, CONSTANT("LOW_BAR_MAX_SPEED"),CONSTANT("AUTO_INTAKE_POSITION"), 5));
-	m_Modes["SpyBot"].push_back(RobotCommand(CMD_DRIVE_DISTANCE, 110, -90, CONSTANT("LOW_BAR_MAX_SPEED"),CONSTANT("AUTO_INTAKE_POSITION"), 10));
-	m_Modes["SpyBot"].push_back(RobotCommand(CMD_HOLD_DISTANCE, 219, -90, CONSTANT("LOW_BAR_MAX_SPEED"),CONSTANT("AUTO_INTAKE_POSITION"), 5));
+	//m_Modes["SpyBot"].push_back(RobotCommand(CMD_TURN, 0, -90, CONSTANT("DRIVE_MAX_SPEED"),CONSTANT("EDGE_FIELD"), 0.75));
+	m_Modes["SpyBot"].push_back(RobotCommand(CMD_DRIVE_DISTANCE, 52, -45, CONSTANT("BEFORE_LOW_BAR_MAX_SPEED"),CONSTANT("AUTO_INTAKE_POSITION"), 1));
+	m_Modes["SpyBot"].push_back(RobotCommand(CMD_DRIVE_DISTANCE, 120.9375, -90, CONSTANT("BEFORE_LOW_BAR_MAX_SPEED"),CONSTANT("AUTO_INTAKE_POSITION"), 1));
+	m_Modes["SpyBot"].push_back(RobotCommand(CMD_DRIVE_DISTANCE, 316, -90, CONSTANT("LOW_BAR_MAX_SPEED"),CONSTANT("AUTO_INTAKE_POSITION"), 5));
+	m_Modes["SpyBot"].push_back(RobotCommand(CMD_DRIVE_DISTANCE, 154.6875, -90, CONSTANT("LOW_BAR_MAX_SPEED"),CONSTANT("AUTO_INTAKE_POSITION"), 10));
+	m_Modes["SpyBot"].push_back(RobotCommand(CMD_HOLD_DISTANCE, 316, -90, CONSTANT("LOW_BAR_MAX_SPEED"),CONSTANT("AUTO_INTAKE_POSITION"), 5));
 
-
+//	m_Modes["2ball"];
+//	m_Modes["2ball"].push_back(RobotCommand(CMD_SPOOL_SHOOTER, 0, 0, CONSTANT("DRIVE_MAX_SPEED"), CONSTANT("INTAKE_POSITION"), 0.125));
+//	m_Modes["2ball"].push_back(RobotCommand(CMD_HOLD_DISTANCE, -56.75, 20, CONSTANT("DRIVE_MAX_SPEED"), CONSTANT("EDGE_FIELD"), 1.25));
+//	m_Modes["2ball"].push_back(RobotCommand(CMD_TURN, 0, -10, CONSTANT("DRIVE_MAX_SPEED"), CONSTANT("EDGE_FIELD"), 0.75));
+//	m_Modes["2ball"].push_back(RobotCommand(CMD_HOLD_DISTANCE, -16.875, -10, CONSTANT("BATTER_MAX_SPEED"), CONSTANT("EDGE_FIELD"), 1));
+//
+//	m_Modes["2ball"].push_back(RobotCommand(CMD_SHOOT, 0, -4.5, CONSTANT("DRIVE_MAX_SPEED"),CONSTANT("EDGE_FIELD"), 0.5));
+//	m_Modes["2ball"].push_back(RobotCommand(CMD_WAIT, 0, -4.5, CONSTANT("DRIVE_MAX_SPEED"),CONSTANT("EDGE_FIELD"), 0.25));
+//	m_Modes["2ball"].push_back(RobotCommand(CMD_TURN, 0, -6.5, CONSTANT("DRIVE_MAX_SPEED"), CONSTANT("EDGE_FIELD"), 0.75));
+//
+//	m_Modes["2ball"].push_back(RobotCommand(CMD_HOLD_DISTANCE, 30.9375, -6.5, CONSTANT("BATTER_MAX_SPEED"),CONSTANT("EDGE_FIELD"), 0.5));
+//
+//	m_Modes["2ball"].push_back(RobotCommand(CMD_TURN, 0, -90, CONSTANT("DRIVE_MAX_SPEED"),CONSTANT("EDGE_FIELD"), 0.75));
+//	m_Modes["2ball"].push_back(RobotCommand(CMD_DRIVE_DISTANCE, 120.9375, -90, CONSTANT("BEFORE_LOW_BAR_MAX_SPEED"),CONSTANT("AUTO_INTAKE_POSITION"), 1.5));
+//	m_Modes["2ball"].push_back(RobotCommand(CMD_DRIVE_DISTANCE, 265, -90, CONSTANT("LOW_BAR_MAX_SPEED"),CONSTANT("AUTO_INTAKE_POSITION"), 5));
+//	m_Modes["2ball"].push_back(RobotCommand(CMD_TURN, 0, -180, CONSTANT("DRIVE_MAX_SPEED"),CONSTANT("EDGE_FIELD"), 0.75));
+//	m_Modes["2ball"].push_back(RobotCommand(CMD_DRIVE_DISTANCE, 24, -180, CONSTANT("LOW_BAR_MAX_SPEED"),CONSTANT("AUTO_INTAKE_POSITION"), 5));
+//	m_Modes["2ball"].push_back(RobotCommand(CMD_TURN, 0, -90, CONSTANT("DRIVE_MAX_SPEED"),CONSTANT("EDGE_FIELD"), 0.75));
+//	m_Modes["2ball"].push_back(RobotCommand(CMD_INTAKE, 4, -90, CONSTANT("LOW_BAR_MAX_SPEED"),CONSTANT("AUTO_INTAKE_POSITION"), 5));
+//	m_Modes["2ball"].push_back(RobotCommand(CMD_DRIVE_DISTANCE, 0, -90, CONSTANT("LOW_BAR_MAX_SPEED"),CONSTANT("AUTO_INTAKE_POSITION"), 5));
+//	m_Modes["2ball"].push_back(RobotCommand(CMD_TURN, 0, -180, CONSTANT("DRIVE_MAX_SPEED"),CONSTANT("EDGE_FIELD"), 0.75));
+//	m_Modes["2ball"].push_back(RobotCommand(CMD_DRIVE_DISTANCE, -24, -180, CONSTANT("LOW_BAR_MAX_SPEED"),CONSTANT("AUTO_INTAKE_POSITION"), 5));
+//	m_Modes["2ball"].push_back(RobotCommand(CMD_TURN, 0, -90, CONSTANT("DRIVE_MAX_SPEED"),CONSTANT("EDGE_FIELD"), 0.75));
+//	m_Modes["2ball"].push_back(RobotCommand(CMD_DRIVE_DISTANCE, -120, -90, CONSTANT("LOW_BAR_MAX_SPEED"),CONSTANT("AUTO_INTAKE_POSITION"), 5));
+//	m_Modes["2ball"].push_back(RobotCommand(CMD_DRIVE_DISTANCE, -265, -90, CONSTANT("LOW_BAR_MAX_SPEED"),CONSTANT("EDGE_FIELD"), 5));
+//	m_Modes["2ball"].push_back(RobotCommand(CMD_SPOOL_SHOOTER, 0, 0, CONSTANT("DRIVE_MAX_SPEED"), CONSTANT("INTAKE_POSITION"), 0.125));
+//
+//	m_Modes["2ball"].push_back(RobotCommand(CMD_TURN, 0, -4.5, CONSTANT("DRIVE_MAX_SPEED"),CONSTANT("EDGE_FIELD"), 0.75));
+//	m_Modes["2ball"].push_back(RobotCommand(CMD_SHOOT, 0, -4.5, CONSTANT("DRIVE_MAX_SPEED"),CONSTANT("EDGE_FIELD"), 0.5));
+//
 
 
 
