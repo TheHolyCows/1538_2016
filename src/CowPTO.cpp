@@ -7,12 +7,9 @@
 
 #include <CowPTO.h>
 
-CowPTO::CowPTO(Solenoid *solenoidLeft, Solenoid *solenoidRight) :
+CowPTO::CowPTO(Solenoid *solenoidLeft) :
 	m_State(LOCK),
-	m_SolenoidLeft(solenoidLeft),
-	m_SolenoidRight(solenoidRight),
-	m_StartNeutralTime(0),
-	m_JimmyMode(false)
+	m_SolenoidLeft(solenoidLeft)
 {
 	// TODO Auto-generated constructor stub
 
@@ -28,10 +25,7 @@ CowPTO::~CowPTO()
 void CowPTO::SetState(e_PTO_State state)
 {
 	m_State = state;
-	if(state == ENTER_NEUTRAL)
-	{
-		m_StartNeutralTime = Timer::GetFPGATimestamp();
-	}
+
 }
 
 bool CowPTO::JimmyMode()
@@ -62,39 +56,12 @@ void CowPTO::Handle()
 		case LOCK: // button 1
 		{
 			m_SolenoidLeft->Set(false);
-			m_SolenoidRight->Set(false);
 			break;
 		}
-		case ENTER_NEUTRAL: // button 3
-		{
-			m_SolenoidLeft->Set(true);
-			m_SolenoidRight->Set(true);
 
-			double elapsedTime = Timer::GetFPGATimestamp() - m_StartNeutralTime;
-			//Jimmy the drivetrain
-			m_JimmyMode = true;
-
-			if(elapsedTime >= 0.125)
-			{
-				SetState(NEUTRAL);
-			}
-			break;
-		}
-		case NEUTRAL: //
-		{
-			m_SolenoidLeft->Set(false);
-			m_SolenoidRight->Set(true);
-			double elapsedTime = Timer::GetFPGATimestamp() - m_StartNeutralTime;
-			if(elapsedTime >= 0.250)
-			{
-				m_JimmyMode = false;
-			}
-			break;
-		}
 		case ENGAGE:// button 4
 		{
 			m_SolenoidLeft->Set(true);
-			m_SolenoidRight->Set(true);
 			break;
 		}
 		default:

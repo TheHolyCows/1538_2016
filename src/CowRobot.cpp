@@ -26,7 +26,7 @@ CowRobot::CowRobot()
 	m_QEI3 = new Encoder(MXP_QEI_3_A, MXP_QEI_3_B, true, Encoder::k1X);
 	m_QEI4 = new Encoder(MXP_QEI_4_A, MXP_QEI_4_B, true, Encoder::k1X);
 	//m_QEI5 = new Encoder(MXP_QEI_5_A, MXP_QEI_5_B, true, Encoder::k1X);
-
+	m_MatchTime = 0;
 
 	m_Arm = new Arm(ARM_A, ARM_B, m_QEI2);
 	m_CenteringIntake = new CenteringIntake(LEFT_CENTER, RIGHT_CENTER);
@@ -34,9 +34,9 @@ CowRobot::CowRobot()
 	m_Shooter = new Shooter(SHOOTER_A, SHOOTER_B, m_QEI4, m_QEI3);
 	m_BallHandler = new BallHandler(m_CenteringIntake, m_Intake, m_Shooter);
 
-	m_SolenoidLeft = new Solenoid(SOLENOID_LEFT);
-	m_SolenoidRight = new Solenoid(SOLENOID_RIGHT);
-	m_CowPTO = new CowPTO(m_SolenoidLeft, m_SolenoidRight);
+	m_SolenoidPTO = new Solenoid(SOLENOID_PTO);
+	m_SolenoidArm = new Solenoid(SOLENOID_ARM);
+	m_CowPTO = new CowPTO(m_SolenoidPTO);
 
 	m_LEDDisplay = new CowLib::CowAlphaNum(0x70);
 
@@ -74,6 +74,8 @@ void CowRobot::Reset()
 
 	m_LeftDriveValue = 0;
 	m_RightDriveValue = 0;
+	m_MatchTime = 0;
+
 }
 
 void CowRobot::SetController(GenericController *controller)
@@ -101,6 +103,7 @@ void CowRobot::PrintToDS()
 /// Please call this once per update cycle.
 void CowRobot::handle()
 {	
+
 	if(m_Controller == NULL)
 	{
 		printf("No controller for CowRobot!!\n");
@@ -110,6 +113,12 @@ void CowRobot::handle()
 	//printf("Handling...\n");
 	m_Controller->handle(this);
 	
+	double currentMatchTime = Timer::GetFPGATimestamp() - m_MatchTime;
+	if(currentMatchTime > 134)
+	{
+		m_Arm->SetLockState(true);
+	}
+
 	m_Arm->Handle();
 	m_CenteringIntake->Handle();
 	m_Intake->Handle();
@@ -122,31 +131,31 @@ void CowRobot::handle()
 	float tmpLeftMotor = m_LeftDriveValue;
 	float tmpRightMotor = m_RightDriveValue;
 	
-	if(m_CowPTO->JimmyMode())
-	{
-		if(m_JimmyCounts % 5 == 0)
-		{
-			m_JimmyCounts = 0;
-
-			tmpLeftMotor = 0.5;
-			tmpRightMotor = 0.5;
-		}
-		else
-		{
-			tmpLeftMotor = -0.5;
-			tmpRightMotor = -0.5;
-		}
-	}
-
-	if(m_CowPTO->HangRequested())
-	{
-		bool statusHang = DriveDistance(CONSTANT("PTO_DRIVE_DISTANCE"));
-
-//		if(statusHang)
+//	if(m_CowPTO->JimmyMode())
+//	{
+//		if(m_JimmyCounts % 5 == 0)
 //		{
-//			m_CowPTO->SetState(LOCK);
+//			m_JimmyCounts = 0;
+//
+//			tmpLeftMotor = 0.5;
+//			tmpRightMotor = 0.5;
 //		}
-	}
+//		else
+//		{
+//			tmpLeftMotor = -0.5;
+//			tmpRightMotor = -0.5;
+//		}
+//	}
+
+//	if(m_CowPTO->HangRequested())
+//	{
+//		bool statusHang = DriveDistance(CONSTANT("PTO_DRIVE_DISTANCE"));
+//
+////		if(statusHang)
+////		{
+////			m_CowPTO->SetState(LOCK);
+////		}
+//	}
 
 	SetLeftMotors(tmpLeftMotor);
 	SetRightMotors(tmpRightMotor);
@@ -361,4 +370,14 @@ void CowRobot::SetRightMotors(float val)
 	m_RightDriveA->Set(val);
 	m_RightDriveB->Set(-val);
 	m_RightDriveC->Set(-val);
+}
+
+void CowRobot::StartTime()
+{
+	m_MatchTime = Timer::GetFPGATimestamp();
+}
+
+void CowRobot::DeployHangar(bool val)
+{
+	m_SolenoidArm->Set(val);
 }

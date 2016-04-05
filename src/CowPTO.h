@@ -14,8 +14,6 @@ typedef enum
 {
 	PTO_NONE = 0,
 	LOCK,
-	ENTER_NEUTRAL,
-	NEUTRAL,
 	ENGAGE,
 } e_PTO_State;
 
@@ -23,7 +21,7 @@ class CowPTO
 {
 public:
 	virtual ~CowPTO();
-	CowPTO(Solenoid *solenoidLeft, Solenoid *solenoidRight);
+	CowPTO(Solenoid *solenoidLeft);
 	bool JimmyMode();
 	bool HangRequested();
 	void Handle();
@@ -31,7 +29,6 @@ public:
 private:
 	e_PTO_State m_State;
 	Solenoid *m_SolenoidLeft;	//
-	Solenoid *m_SolenoidRight;
 	double m_StartNeutralTime;
 	bool m_JimmyMode;
 };

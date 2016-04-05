@@ -50,8 +50,8 @@ private:
 	Shooter *m_Shooter;
 	BallHandler *m_BallHandler;
 
-	Solenoid *m_SolenoidLeft;
-	Solenoid *m_SolenoidRight;
+	Solenoid *m_SolenoidPTO;
+	Solenoid *m_SolenoidArm;
 
 	CowPTO *m_CowPTO;
 
@@ -68,6 +68,8 @@ private:
 
 	int32_t m_JimmyCounts;
 	bool m_Hang;
+
+	double m_MatchTime;
 
 	void SetLeftMotors(float val);
 	void SetRightMotors(float val);
@@ -90,6 +92,8 @@ public:
 	void QuickTurn(float turn);
 	void Hang();
 	
+	void StartTime();
+
 	CowLib::CowAlphaNum *GetDisplay()
 	{
 		return m_LEDDisplay;
@@ -141,6 +145,7 @@ public:
 	}
 
 	void handle();
+	void DeployHangar(bool val);
 };
 
 #endif

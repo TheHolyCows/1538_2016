@@ -29,6 +29,9 @@ private:
 	CowLib::CowLatch *m_PtoEngageLatch;
 	CowLib::CowLatch *m_ArmLockLatch;
 
+	CowLib::CowLatch *m_HangLatch;
+	bool m_HangerDeployed;
+
 
 public:
 	OperatorController(CowControlBoard *controlboard);

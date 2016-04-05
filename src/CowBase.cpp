@@ -51,6 +51,7 @@ void CowBase::AutonomousInit()
 }
 void CowBase::TeleopInit()
 {
+	m_Bot->StartTime();
 	m_Bot->GetGyro()->FinalizeCalibration();
 	m_Bot->SetController(m_OpController);
 	m_Bot->GetArm()->SetLockState(false);

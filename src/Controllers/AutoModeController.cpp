@@ -70,6 +70,7 @@ void AutoModeController::handle(CowRobot *bot)
 		{
 			bot->DriveDistanceWithHeading(m_CurrentCommand.m_Heading, m_CurrentCommand.m_EncoderCount,m_CurrentCommand.m_Speed);
 			bot->GetArm()->SetPosition(m_CurrentCommand.m_Arm);
+			bot->GetBallHandler()->SetState(INTAKE);
 
 			e_BallHandleState ballState = bot->GetBallHandler()->GetState();
 			if(ballState == INTAKE_MOAR ||
