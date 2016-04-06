@@ -125,14 +125,21 @@ void OperatorController::handle(CowRobot *bot)
 	if(m_SpoolShooterLatch->Latch(!m_CB->GetOperatorButton(1)))
 	{
 		std::cout << "Setting state to SPOOL_PID_CONTROL" << std::endl;
-		bot->GetBallHandler()->SetShooterState(SPOOL_PID_CONTROL);
+		if(m_HangerDeployed)
+		{
+			bot->GetBallHandler()->SetShooterState(HANG_SPOOL_PID_CONTROL);
+		}
+		else
+		{
+			bot->GetBallHandler()->SetShooterState(SPOOL_PID_CONTROL);
+		}
 	}
 	else if(m_CB->GetOperatorButton(1))
 	{
 		m_SpoolShooterLatch->ResetLatch();
 	}
 
-	if(m_CB->GetSteeringButton(8))
+	if(m_CB->GetSteeringButton(8) && m_HangerDeployed)
 	{
 		bot->GetCowPTO()->SetState(ENGAGE);
 	}

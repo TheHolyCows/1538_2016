@@ -31,7 +31,8 @@ typedef enum
 {
    SHOOTER_NONE = 0,
    MANUAL_CONTROL,
-   SPOOL_PID_CONTROL
+   SPOOL_PID_CONTROL,
+   HANG_SPOOL_PID_CONTROL
 
 } e_ShooterState;
 

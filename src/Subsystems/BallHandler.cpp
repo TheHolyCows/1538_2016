@@ -23,7 +23,7 @@ BallHandler::BallHandler(CenteringIntake *centeringIntake, Intake *intake, Shoot
 
 void BallHandler::SetState(e_BallHandleState state)
 {
-	if(state == SHOOT_STAGE && m_ShooterState != SPOOL_PID_CONTROL)
+	if(state == SHOOT_STAGE && m_ShooterState != SPOOL_PID_CONTROL && m_ShooterState != HANG_SPOOL_PID_CONTROL)
 	{
 		return;
 	}
@@ -203,6 +203,13 @@ void BallHandler::Handle()
 		  m_Shooter->SetPIDState(true);
 		  // start shooter
 		  m_Shooter->SetAutoSpeed(CONSTANT("SHOOTER_RPM_A"), CONSTANT("SHOOTER_RPM_B"));
+		  break;
+	  }
+	  case HANG_SPOOL_PID_CONTROL:
+	  {
+		  m_Shooter->SetPIDState(true);
+		  // start shooter
+		  m_Shooter->SetAutoSpeed(CONSTANT("SHOOTER_RPM_A")/2, CONSTANT("SHOOTER_RPM_B")/2);
 		  break;
 	  }
 	  default:

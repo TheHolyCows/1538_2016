@@ -19,6 +19,13 @@ CowRobot::CowRobot()
 	m_RightDriveB = new CANTalon(DRIVE_RIGHT_B);
 	m_RightDriveC = new CANTalon(DRIVE_RIGHT_C);
 
+	m_LeftDriveA->ConfigNeutralMode(CANTalon::NeutralMode::kNeutralMode_Brake);
+	m_LeftDriveB->ConfigNeutralMode(CANTalon::NeutralMode::kNeutralMode_Brake);
+	m_LeftDriveC->ConfigNeutralMode(CANTalon::NeutralMode::kNeutralMode_Brake);
+	m_RightDriveA->ConfigNeutralMode(CANTalon::NeutralMode::kNeutralMode_Brake);
+	m_RightDriveB->ConfigNeutralMode(CANTalon::NeutralMode::kNeutralMode_Brake);
+	m_RightDriveC->ConfigNeutralMode(CANTalon::NeutralMode::kNeutralMode_Brake);
+
 	m_DriveEncoder = new Encoder(MXP_QEI_5_A, MXP_QEI_5_B, false, Encoder::k1X);
 	m_DriveEncoder->SetDistancePerPulse(0.05235983333333); // 6*pi/360
 
