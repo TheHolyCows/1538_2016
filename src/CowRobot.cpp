@@ -59,6 +59,7 @@ CowRobot::CowRobot()
 	m_PreviousDriveError = 0;
 
 	m_JimmyCounts = 0;
+	m_AutoOffsetAngle = 0;
 	m_Hang = false;
 }
 
@@ -120,11 +121,11 @@ void CowRobot::handle()
 	//printf("Handling...\n");
 	m_Controller->handle(this);
 	
-	double currentMatchTime = Timer::GetFPGATimestamp() - m_MatchTime;
-	if(currentMatchTime > 134)
-	{
-		m_Arm->SetLockState(true);
-	}
+//	double currentMatchTime = Timer::GetFPGATimestamp() - m_MatchTime;
+//	if(currentMatchTime > 134)
+//	{
+//		m_Arm->SetLockState(true);
+//	}
 
 	m_Arm->Handle();
 	m_CenteringIntake->Handle();
@@ -177,8 +178,7 @@ void CowRobot::handle()
 		//std::cout << "Gyro: " <<  m_Gyro->GetAngle() << std::endl;
 //		std::cout << std::dec
 //				  << m_DriveEncoder->Get() << " "
-//				  << m_Gyro->GetAngle() << std::endl;
-		std::cout << "Heading: " << m_Gyro->GetAngle() << " " << m_DriveEncoder->GetDistance() << std::endl;
+//				  << m_Gyro->GetAngle() << std::endl;std::cout << "Heading: " << m_Gyro->GetAngle() << " " << m_DriveEncoder->GetDistance() << std::endl;
 
 	}
 

@@ -28,8 +28,9 @@ CowBase::~CowBase()
 
 void CowBase::RobotInit()
 {
+	system("dhclient -r eth0");
 	m_Bot->Reset();
-	m_Bot->GetArm()->SetLockState(true);
+	//m_Bot->GetArm()->SetLockState(true);
 }
 
 void CowBase::DisabledInit()
@@ -90,6 +91,21 @@ void CowBase::DisabledPeriodic()
 		}
 	}
 	
+	if(m_ControlBoard->GetAutoAddAngleOffsetButton())
+	{
+		if(m_ControlBoard->GetSteeringButton(9))
+		{
+			m_Bot->AddAutoOffsetAngle();
+		}
+	}
+	if(m_ControlBoard->GetAutoDecAngleOffsetButton())
+	{
+		if(m_ControlBoard->GetSteeringButton(11))
+		{
+			m_Bot->DecAutoOffsetAngle();
+		}
+	}
+
 	if(m_ControlBoard->GetSteeringButton(7))
 	{
 		m_Bot->GetArm()->UseOffsetPosition();

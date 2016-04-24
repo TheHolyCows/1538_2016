@@ -70,6 +70,7 @@ private:
 	bool m_Hang;
 
 	double m_MatchTime;
+	float m_AutoOffsetAngle;
 
 	void SetLeftMotors(float val);
 	void SetRightMotors(float val);
@@ -142,6 +143,27 @@ public:
 	CowPTO *GetCowPTO()
 	{
 		return m_CowPTO;
+	}
+
+	void AddAutoOffsetAngle()
+	{
+		m_AutoOffsetAngle += 2.5;
+		std::stringstream tempSS;
+		tempSS << "Offset Angle: " << m_AutoOffsetAngle << std::endl;
+		DriverStation::GetInstance().ReportError(tempSS.str());
+	}
+
+	void DecAutoOffsetAngle()
+	{
+		m_AutoOffsetAngle -= 2.5;
+		std::stringstream tempSS;
+		tempSS << "Offset Angle: " << m_AutoOffsetAngle << std::endl;
+		DriverStation::GetInstance().ReportError(tempSS.str());
+	}
+
+	float GetAutoOffsetAngle()
+	{
+		return m_AutoOffsetAngle;
 	}
 
 	void handle();

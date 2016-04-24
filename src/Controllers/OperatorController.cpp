@@ -14,6 +14,9 @@ OperatorController::OperatorController(CowControlBoard *controlboard)
 	m_PtoEngageLatch = new CowLib::CowLatch();
 	m_ArmLockLatch = new CowLib::CowLatch();
 	m_HangLatch = new CowLib::CowLatch();
+
+	m_ArmOffsetIncLatch = new CowLib::CowLatch();
+	m_ArmOffsetDecLatch = new CowLib::CowLatch();
 	m_HangerDeployed = false;
 }
 
@@ -101,7 +104,7 @@ void OperatorController::handle(CowRobot *bot)
 	if(m_ShootLatch->Latch(m_CB->GetOperatorButton(5)))
 	{
 		std::cout << "Setting state to SHOOT_STAGE" << std::endl;
-
+		std::cout << "ASP: " << bot->GetArm()->GetSetpoint() << std::endl;
 		bot->GetBallHandler()->SetState(SHOOT_STAGE);
 	}
 	else if(!m_CB->GetOperatorButton(5))
@@ -159,6 +162,26 @@ void OperatorController::handle(CowRobot *bot)
 	else if(!m_CB->GetOperatorButton(3))
 	{
 		m_ArmLockLatch->ResetLatch();
+	}
+
+	if(m_ArmOffsetIncLatch->Latch(m_CB->GetSteeringButton(10)))
+	{
+		//Increment Offset
+		bot->GetArm()->AddUserOffset(-15);
+	}
+	else if(!m_CB->GetSteeringButton(10))
+	{
+		m_ArmOffsetIncLatch->ResetLatch();
+	}
+
+	if(m_ArmOffsetDecLatch->Latch(m_CB->GetSteeringButton(12)))
+	{
+		//Decrement Offset
+		bot->GetArm()->AddUserOffset(15);
+	}
+	else if(!m_CB->GetSteeringButton(12))
+	{
+		m_ArmOffsetDecLatch->ResetLatch();
 	}
 }
 

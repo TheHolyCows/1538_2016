@@ -13,18 +13,25 @@ Arm::Arm(uint8_t motorA, uint8_t motorB, Encoder* encoder)
 	:
 	m_MotorA(NULL),
 	m_MotorB(NULL),
+	m_Flashlight(NULL),
 	m_Encoder(encoder),
 	m_PID(NULL),
 	m_UnlockSolenoid(NULL),
 	m_LockSolenoid(NULL),
 	m_LockedState(false),
+	m_StartUnlock(false),
 	m_Speed(0),
 	m_Setpoint(0),
 	m_OffsetPosition(false),
+	m_UserOffsetPosition(0),
 	m_UnlockTime(0)
 {
 	m_MotorA = new CANTalon(motorA);
 	m_MotorB = new CANTalon(motorB);
+	m_Flashlight = new CANTalon(FLASHLIGHT);
+	m_Flashlight->SetControlMode(CANTalon::kVoltage);
+	//m_Flashlight->SetVoltageCompensationRampRate(24.0);
+
 
 	m_MotorA->SetVoltageRampRate(CONSTANT("ARM_RAMP_RATE"));
 	m_MotorB->SetVoltageRampRate(CONSTANT("ARM_RAMP_RATE"));
@@ -34,6 +41,12 @@ Arm::Arm(uint8_t motorA, uint8_t motorB, Encoder* encoder)
 
 	m_LockSolenoid = new Solenoid(SOLENOID_LOCK);
 	m_UnlockSolenoid = new Solenoid(SOLENOID_UNLOCK);
+}
+
+void Arm::AddUserOffset(float offset)
+{
+	m_UserOffsetPosition += offset;
+	std::cout << "User offset now: " << m_UserOffsetPosition << std::endl;
 }
 
 void Arm::SetManualSpeed(float speed)
@@ -56,15 +69,12 @@ void Arm::SetLockState(bool state)
 {
 	if(state)
 	{
-		m_UnlockSolenoid->Set(false);
-		m_LockSolenoid->Set(true);
 		m_LockedState = true;
 		m_UnlockTime = 0;
 	}
 	else
 	{
-		m_UnlockSolenoid->Set(true);
-		m_LockSolenoid->Set(false);
+		m_StartUnlock = true;
 		m_UnlockTime = Timer::GetFPGATimestamp();
 	}
 }
@@ -83,9 +93,28 @@ void Arm::Handle()
 {
 	if(m_MotorA && m_MotorB)
 	{
-		if((Timer::GetFPGATimestamp() - m_UnlockTime) > 0.25 && m_LockedState)
+		if(m_StartUnlock)
 		{
-			m_LockedState = false;
+			m_UnlockSolenoid->Set(true);
+			m_LockSolenoid->Set(false);
+
+			m_Speed = 0;
+
+			if((Timer::GetFPGATimestamp() - m_UnlockTime) > 0.25 && m_LockedState)
+			{
+				m_LockedState = false;
+				m_StartUnlock = false;
+			}
+		}
+
+		if(GetSetpoint() == CONSTANT("BATTER_POSITION") ||
+			GetSetpoint() == CONSTANT("EDGE_FIELD"))
+		{
+			m_Flashlight->Set(CONSTANT("LIGHT_VOLTAGE"));
+		}
+		else
+		{
+			m_Flashlight->Set(0);
 		}
 
 		double encoderPosition = m_Encoder->GetRaw();
@@ -94,6 +123,8 @@ void Arm::Handle()
 		{
 			encoderPosition += CONSTANT("STARTING_POSITION");
 		}
+
+		encoderPosition += m_UserOffsetPosition;
 
 //		std::cout << std::dec << "Arm Position: "
 //				  << encoderPosition
@@ -119,8 +150,16 @@ void Arm::Handle()
 
 		if(m_LockedState)
 		{
+			m_UnlockSolenoid->Set(false);
+			m_LockSolenoid->Set(true);
 			m_Speed = 0;
 		}
+		else
+		{
+			m_UnlockSolenoid->Set(true);
+			m_LockSolenoid->Set(false);
+		}
+
 		m_MotorA->Set(m_Speed);
 		m_MotorB->Set(m_Speed);
 	}
@@ -137,6 +176,7 @@ void Arm::ResetConstants()
 void Arm::Reset()
 {
 	m_Speed = 0;
+	m_LockedState = false;
 	//m_Setpoint = 0;
 }
 

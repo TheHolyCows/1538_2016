@@ -29,12 +29,17 @@ private:
 	Joystick *m_OperatorGamepad;
 	
 	bool m_PreviousAuto;
+	bool m_PreviousAddAngle;
+	bool m_PreviousDecAngle;
+
 public:
 	CowControlBoard();
 	
 	bool GetQuickTurn();
 	bool GetAutoSelectButton();
-	
+	bool GetAutoAddAngleOffsetButton();
+	bool GetAutoDecAngleOffsetButton();
+
 	float GetDriveAxis(unsigned int axis);
 	
 	float GetDriveStickY();

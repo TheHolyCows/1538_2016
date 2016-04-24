@@ -29,6 +29,27 @@ bool CowControlBoard::GetAutoSelectButton()
 	return false;
 }
 
+bool CowControlBoard::GetAutoAddAngleOffsetButton()
+{
+	if(GetSteeringButton(9) && !m_PreviousAddAngle)
+	{
+		m_PreviousAddAngle = GetSteeringButton(9);
+		return true;
+	}
+	m_PreviousAddAngle = GetSteeringButton(9);
+	return false;
+}
+
+bool CowControlBoard::GetAutoDecAngleOffsetButton()
+{
+	if(GetSteeringButton(11) && !m_PreviousDecAngle)
+	{
+		m_PreviousDecAngle = GetSteeringButton(11);
+		return true;
+	}
+	m_PreviousDecAngle = GetSteeringButton(11);
+	return false;
+}
 
 // Returns the state of the quick turn
 bool CowControlBoard::GetQuickTurn()

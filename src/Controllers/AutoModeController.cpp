@@ -124,6 +124,16 @@ void AutoModeController::handle(CowRobot *bot)
 		{
 			break;
 		}
+		case CMD_ADD_ANGLE_OFFSET:
+		{
+			std::deque<RobotCommand>::iterator iterator = m_CommandList.begin();
+
+			for(; iterator != m_CommandList.end(); ++iterator)
+			{
+				iterator->m_Heading += bot->GetAutoOffsetAngle();
+			}
+			break;
+		}
 		default:
 		{
 			doNothing(bot);

@@ -33,7 +33,7 @@
 #define INTAKE_A						12
 #define INTAKE_B						13
 #define RIGHT_CENTER					14
-#define AUX								15
+#define FLASHLIGHT						15
 
 #define MXP_QEI_1_A						10
 #define MXP_QEI_1_B						11
